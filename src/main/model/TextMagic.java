@@ -1,5 +1,6 @@
 package model;
 
-public class MyModel {
+// TextMagic program class
+public class TextMagic {
     // delete or rename this class!
 }
