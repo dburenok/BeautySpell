@@ -12,3 +12,12 @@ BeautySpell will:
 This project will be useful for drafting an essay as you won't have to click on each word individually (like in Word or Pages). The incorrect words will be served in a controlled way, letting you work systematically through your text, rather than haphazardly looking for the red lines in your text. The automatic word suggestions can be easily overwritten during the spellcheck process.
 
 I'm interested in this project because I want to learn how to implement a word suggestion algorithm. I also think this is a simple, robust way to get spellcheck and text beautyfication functionality without any hassle.
+
+## User Stories
+
+- As a user, I want to enter text and save it to a document library under a given name
+- As a user, I want to enter text and know how many grammatical errors are present
+- As a user, I want to select a previously saved document and check how many grammatical errors are present
+- As a user, I want to quickly fix the capitalization of any sentence
+- As a user, I want to quickly remove and trim unnecessary whitespace in a given text
+- As a user, I want to make sure the periods and commas in a text are placed correctly
