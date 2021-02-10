@@ -15,9 +15,7 @@ I'm interested in this project because I want to learn how to implement a word s
 
 ## User Stories
 
-- As a user, I want to enter text and save it to a document library under a given name
-- As a user, I want to enter text and know how many grammatical errors are present
-- As a user, I want to select a previously saved document and check how many grammatical errors are present
-- As a user, I want to quickly fix the capitalization of any sentence
-- As a user, I want to quickly remove and trim unnecessary whitespace in a given text
-- As a user, I want to make sure the periods and commas in a text are placed correctly
+- As a user, I want to enter separate blocks of text (documents) and save them to a document library
+- As a user, I want to select a previously saved document and check how many typos are present in it
+- As a user, I want to remove and trim unnecessary whitespace in a document
+- As a user, I want to make sure the periods and commas in a document are placed correctly
