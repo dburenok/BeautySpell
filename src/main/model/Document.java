@@ -62,27 +62,27 @@ public class Document {
     @SuppressWarnings("checkstyle:MethodLength")
     public ArrayList<String> breakTextIntoWordArray() {
         int location = 0;
-        String currentWord = "";
+        StringBuilder currentWord = new StringBuilder();
 
         while (location < text.length()) {
 
             Character c = text.charAt(location);
 
             if (Character.isLetter(c) || Character.isDigit(c) || nonPunctChars.contains(c)) {
-                currentWord += c;
+                currentWord.append(c);
             } else if (c == ' ') {
-                words.add(currentWord);
+                words.add(currentWord.toString());
                 if (location + 1 != text.length()) {
                     words.add(" ");
                 }
-                currentWord = "";
+                currentWord = new StringBuilder();
             } else {
-                words.add(currentWord);
+                words.add(currentWord.toString());
                 words.add(String.valueOf(c));
                 if (location + 1 != text.length()) {
                     words.add(" ");
                 }
-                currentWord = "";
+                currentWord = new StringBuilder();
                 location++;
             }
             location++;
@@ -100,7 +100,7 @@ public class Document {
 
 
     public ListOfSpellingErrors spellcheck() throws FileNotFoundException {
-        TreeSet<String> wordDictionary = new TreeSet<String>();
+        TreeSet<String> wordDictionary = new TreeSet<>();
         File file = new File("/Users/dmitriy/Documents/CPSC210/project/project_u7j5a/data/dictionary.txt");
         Scanner scan = new Scanner(file);
         while (scan.hasNextLine()) {
@@ -115,6 +115,7 @@ public class Document {
                     // TODO
                     // makeSpellingError();
                     // errors.add(error);
+
                 }
             }
 

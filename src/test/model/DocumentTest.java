@@ -35,8 +35,6 @@ class DocumentTest {
         String text = " This is a nice freakin' car  right here , boss . Where's that 200 dollar car? 40% off, right? ";
         testDocument = new Document(text);
         String correctText = "This is a nice freakin' car right here, boss. Where's that 200 dollar car? 40% off, right?";
-        testDocument.fixWhitespace();
-        testDocument.fixWhitespacePunc();
         String result = testDocument.getText();
         assertEquals(correctText, result);
     }
@@ -45,7 +43,6 @@ class DocumentTest {
     void testBreakTextIntoArray() {
         String text = "Here is some text, it needs breaking up.";
         testDocument = new Document(text);
-        testDocument.breakTextIntoWordArray();
         ArrayList<String> wordList = new ArrayList<String>(
                 Arrays.asList("Here", " ", "is", " ", "some", " ", "text", ",", " ", "it", " ", "needs", " ", "breaking", " ", "up", "."));
         assertEquals(wordList, testDocument.getWordsArray());
@@ -53,9 +50,8 @@ class DocumentTest {
 
     @Test
     void testBreakTextIntoArrayAndPutBackTogether() {
-        String text = "Here is some text, it needs breaking up and putting back together! Do it!";
+        String text = "Here is some text, it needs breaking up and putting back together! Do it.";
         testDocument = new Document(text);
-        testDocument.breakTextIntoWordArray();
         assertEquals(text, testDocument.putWordArrayBackTogether());
     }
 
