@@ -1,8 +1,12 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.File;
+import java.util.*;
+
+import java.util.Scanner;
+import java.util.TreeSet;
+
+import java.io.FileNotFoundException;
 
 // A document object represented by the text, and a ListOfSpellingErrors
 public class Document {
@@ -10,26 +14,55 @@ public class Document {
 
     private String text;
     private ListOfSpellingErrors errorList;
+    private ArrayList<String> words = new ArrayList<>();
+    private Boolean isSpellchecked = false;
+
     private static final List<Character> nonPunctChars = Arrays.asList('\'');
 
+    // REQUIRES: text must be size > 0
     public Document(String text) {
-        this.text = text;
-        this.errorList = new ListOfSpellingErrors();
+        if (text.length() > 0) {
+            this.text = text;
+            this.errorList = new ListOfSpellingErrors();
+            fixWhitespace();
+            fixWhitespacePunc();
+            breakTextIntoWordArray();
+        }
     }
 
-    // REQUIRES: String length > 0
+    public String setText(String s) {
+        this.text = s;
+        this.isSpellchecked = false;
+        return text;
+    }
+
+    public ArrayList<String> getWordsArray() {
+        return this.words;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    // MODIFIES: this.text
     // EFFECTS: Replaces consecutive whitespaces with a single whitespace
-    public static String cleanWhitespace(String s) {
-        return s.trim().replaceAll(" +", " ").replaceAll("\\s+(?=\\p{Punct})", "");
+    public String fixWhitespace() {
+        text = text.trim().replaceAll(" +", " ");
+        return text;
     }
 
-    // REQUIRES: String length > 0
+    // MODIFIES: this.text
+    // EFFECTS: Removes extra whitespace before punctuation
+    public String fixWhitespacePunc() {
+        text = text.replaceAll("\\s+(?=\\p{Punct})", "");
+        return text;
+    }
+
     // EFFECTS: Returns ordered ArrayList with each word and non-letter char broken into separate elements
     @SuppressWarnings("checkstyle:MethodLength")
-    public static ArrayList<String> breakTextIntoArray(String text) {
+    public ArrayList<String> breakTextIntoWordArray() {
         int location = 0;
         String currentWord = "";
-        ArrayList<String> words = new ArrayList<>();
 
         while (location < text.length()) {
 
@@ -52,24 +85,59 @@ public class Document {
                 currentWord = "";
                 location++;
             }
-
             location++;
         }
         return words;
     }
 
-    public static void main(String[] args) {
-        String text = " This is some  nice  fuckin' text right here , boss  . How's that 200 dollar car? 40% off right? ";
-        text = cleanWhitespace(text);
-
-        ArrayList<String> result = breakTextIntoArray(text);
+    public String putWordArrayBackTogether() {
         String putBack = "";
+        for (String w: words) {
+            putBack += w;
+        }
+        return putBack;
+    }
 
-        for (String s: result) {
-            putBack += s;
+
+    public ListOfSpellingErrors spellcheck() throws FileNotFoundException {
+        TreeSet<String> wordDictionary = new TreeSet<String>();
+        File file = new File("/Users/dmitriy/Documents/CPSC210/project/project_u7j5a/data/dictionary.txt");
+        Scanner scan = new Scanner(file);
+        while (scan.hasNextLine()) {
+            wordDictionary.add(scan.nextLine().toLowerCase());
         }
 
-        System.out.println(text.equals(putBack));
+        ListOfSpellingErrors errors = new ListOfSpellingErrors();
+
+        for (String w: words) {
+            if (w.length() > 1 || (w.length() == 1 && Character.isLetter(w.charAt(0)))) {
+                if (wordDictionary.contains(w.toLowerCase())) {
+                    // TODO
+                    // makeSpellingError();
+                    // errors.add(error);
+                }
+            }
+
+        }
+        return errors;
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

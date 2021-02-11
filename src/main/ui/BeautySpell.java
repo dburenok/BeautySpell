@@ -1,5 +1,6 @@
 package ui;
 
+import model.Document;
 import sun.awt.HKSCS;
 
 import java.io.File;
@@ -18,25 +19,10 @@ public class BeautySpell {
         runBeautySpell();
     }
 
-    public void runBeautySpell() throws IOException {
-//        File file = new File("/Users/dmitriy/Documents/CPSC210/project/project_u7j5a/data/dictionary.txt");
-//        Scanner scan = new Scanner(file);
-//
-//        TreeSet<String> dictSet = new TreeSet<String>();
-//
-//        // creates dict set
-//        while (scan.hasNextLine()) {
-//            dictSet.add(scan.nextLine());
-//        }
-//
-        String ttt = "In the above image, the navigable set extends the sorted set interface. Since a set doesn’t retain the insertion order, the navigable set interface provides the implementation to navigate through the Set. The class which implements the navigable set is a TreeSet which is an implementation of a self-balancing tree. Therefore, this interface provides us with a way to navigate through this tree.";
-//        // need to remove commas and periods, then lowerscase everything
-//        // String[] textSplit = text.split(" ");
-
-
-
+    public void runBeautySpell() throws FileNotFoundException {
+        String text = "Here is some text, it needs some spell checking. The questin is, is there a typo?";
+        Document d = new Document(text);
+        d.spellcheck();
     }
-
-
 
 }
