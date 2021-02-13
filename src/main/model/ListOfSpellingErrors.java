@@ -4,18 +4,33 @@ import java.util.ArrayList;
 
 public class ListOfSpellingErrors {
 
-    private ArrayList<SpellingError> errorList;
+    private ArrayList<SpellingError> errors;
 
     public ListOfSpellingErrors() {
-        this.errorList = errorList = new ArrayList<SpellingError>();
+        this.errors = new ArrayList<>();
     }
 
     public int numErrors() {
-        return errorList.size();
+        return errors.size();
     }
 
-    public SpellingError nextError() {
-        return errorList.get(0);
+    public SpellingError getNextError() {
+        return errors.get(0);
+    }
+
+    public void addError(SpellingError e) {
+        this.errors.add(e);
+    }
+
+    public void deleteFirstError() {
+        this.errors.remove(0);
+    }
+
+    public void showErrors(String text) {
+        System.out.println("This document has " + errors.size() + " errors.");
+        for (SpellingError e : errors) {
+            e.showError(text);
+        }
     }
 
 }

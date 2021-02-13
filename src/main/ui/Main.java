@@ -1,6 +1,5 @@
 package ui;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 // Main class that starts the program
