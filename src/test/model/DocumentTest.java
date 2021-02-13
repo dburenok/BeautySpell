@@ -84,7 +84,7 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocument.loadDictionary();
-        testDocument.spellcheck();
+        testDocument.runSpellcheck();
         assertEquals(0, testDocument.numErrors());
     }
 
@@ -96,7 +96,7 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocument.loadDictionary();
-        testDocument.spellcheck();
+        testDocument.runSpellcheck();
         assertEquals(2, testDocument.numErrors());
     }
 
@@ -108,7 +108,7 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocument.loadDictionary();
-        testDocument.spellcheck();
+        testDocument.runSpellcheck();
         assertEquals(4, testDocument.numErrors());
     }
 

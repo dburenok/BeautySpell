@@ -2,12 +2,12 @@ package model;
 
 public class SpellingError {
 
-    private int typoPositionStart;
-    private int typoPositionEnd;
-    private String typo;
-    private String suggestedWord;
+    private final int typoPositionStart;
+    private final int typoPositionEnd;
+    private final String typo;
+    private final String suggestedWord;
 
-    private final int previewRange = 15;
+
 
     public SpellingError(int typoPositionStart, int typoPositionEnd, String typo, String suggestedWord) {
         this.typoPositionStart = typoPositionStart;
@@ -17,6 +17,9 @@ public class SpellingError {
     }
 
     public void showError(String text) {
+
+        final int previewRange = 15;
+
         if (typoPositionStart > previewRange & text.length() > previewRange * 3) {
             System.out.println("\"..." + text.substring(typoPositionStart - previewRange, typoPositionStart)
                     + " { " + text.substring(typoPositionStart, typoPositionEnd) + " } "

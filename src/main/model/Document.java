@@ -12,60 +12,67 @@ public class Document {
 
     private String text;
     private ListOfSpellingErrors errors;
-    private ArrayList<String> words = new ArrayList<>();
-    private Boolean isSpellchecked = false;
+    private ArrayList<String> wordsArray;
+    private Boolean isSpellchecked;
 
     HashSet<String> wordDictionary;
-
-    private final Character nonPunctChar = '\'';
 
     // REQUIRES: text must be size > 0
     public Document(String text) {
         if (text.length() > 0) {
             this.text = text;
+            this.wordsArray = new ArrayList<>();
             this.errors = new ListOfSpellingErrors();
+            isSpellchecked = false;
         }
-    }
-
-    public void loadDictionary() throws FileNotFoundException {
-        wordDictionary = new HashSet<>();
-        File file = new File("/home/dmitriy/CPSC210/project_u7j5a/data/dictionary.txt");
-        Scanner scan = new Scanner(file);
-        while (scan.hasNextLine()) {
-            wordDictionary.add(scan.nextLine().toLowerCase());
-        }
-    }
-
-    public String setText(String s) {
-        this.text = s;
-        this.isSpellchecked = false;
-        return text;
     }
 
     public ArrayList<String> getWordsArray() {
-        return this.words;
+        return this.wordsArray;
     }
 
     public String getText() {
         return text;
     }
 
+    // REQUIRES: dictionary.txt file must be present at [project_dir]/data/dictionary.txt
+    // MODIFIES: this.wordDictionary
+    // EFFECTS: loads dictionary into a HashSet
+    // TODO: move this method into DocumentLibrary as it's redundant to load a new dict for each document
+    public void loadDictionary() throws FileNotFoundException {
+        wordDictionary = new HashSet<>();
+        String dictPath = new File("").getAbsolutePath().concat("/data/dictionary.txt");
+        File file = new File(dictPath);
+        Scanner scan = new Scanner(file);
+        while (scan.hasNextLine()) {
+            wordDictionary.add(scan.nextLine().toLowerCase());
+        }
+    }
+
+    // REQUIRES: s.length() > 0
+    // MODIFIES: this
+    // EFFECTS: manually replace document text, set isSpellchecked bool to false
+    public String replaceText(String s) {
+        this.text = s;
+        this.isSpellchecked = false;
+        return text;
+    }
+
     // MODIFIES: this.text
     // EFFECTS: Replaces consecutive whitespaces with a single whitespace
-    public String fixWhitespace() {
+    public void fixWhitespace() {
         text = text.trim().replaceAll(" +", " ");
-        return text;
     }
 
     // MODIFIES: this.text
-    // EFFECTS: Removes extra whitespace before punctuation
-    public String fixPunctuationWhitespace() {
+    // EFFECTS: Removes extra whitespaces before punctuation
+    public void fixPunctuationWhitespace() {
         text = text.replaceAll("\\s+(?=\\p{Punct})", "");
-        return text;
     }
 
+    // MODIFIES: this
     // EFFECTS: Returns ordered ArrayList with each word and non-letter char broken into separate elements
-    public ArrayList<String> breakTextIntoWordArray() {
+    public void breakTextIntoWordArray() {
         int location = 0;
         StringBuilder currentWord = new StringBuilder();
 
@@ -73,44 +80,50 @@ public class Document {
 
             Character c = text.charAt(location);
 
+            char nonPunctChar = '\'';
+
             if (Character.isLetter(c) || Character.isDigit(c) || c == nonPunctChar) {
                 currentWord.append(c);
             } else if (c == ' ') {
-                words.add(currentWord.toString());
+                wordsArray.add(currentWord.toString());
                 insertWhitespaceIfNotOnLastWord(location);
                 currentWord = new StringBuilder();
             } else {
-                words.add(currentWord.toString());
-                words.add(String.valueOf(c));
+                wordsArray.add(currentWord.toString());
+                wordsArray.add(String.valueOf(c));
                 insertWhitespaceIfNotOnLastWord(location);
                 currentWord = new StringBuilder();
                 location++;
             }
             location++;
         }
-        return words;
     }
 
+    // MODIFIES: this.wordsArray
+    // EFFECTS: if while loop not on last word, add a whitespace to the wordsArray. On the last word, we don't do that.
     public void insertWhitespaceIfNotOnLastWord(int location) {
         if (location + 1 < text.length()) {
-            words.add(" ");
+            wordsArray.add(" ");
         }
     }
 
+    // EFFECTS: returns the rebuilt string from the wordsArray - mostly for consistency and testing
     public String putWordArrayBackTogether() {
         StringBuilder putBack = new StringBuilder();
-        for (String w: words) {
+        for (String w: wordsArray) {
             putBack.append(w);
         }
         return putBack.toString();
     }
 
-
-    public ListOfSpellingErrors spellcheck() {
+    // REQUIRES: this.text.length() > 0
+    // MODIFIES: this
+    // EFFECTS: for every array word not in dictionary, new SpellingError object is added to ListOfSpellingErrors
+    public void runSpellcheck() {
         int position = 0;
-        for (String w: words) {
+        for (String w: wordsArray) {
             position += w.length();
-            if (w.length() > 1 || (w.length() == 1 && Character.isLetter(w.charAt(0)))) {
+            if (isWord(w)) {
                 if (!wordDictionary.contains(w.toLowerCase())) {
                     // TODO
                     SpellingError error = new SpellingError(position - w.length(), position, w, "NON");
@@ -118,9 +131,15 @@ public class Document {
                 }
             }
         }
-        return errors;
+        isSpellchecked = true;
     }
 
+    // EFFECTS: Helper method: if current word is an actual word return true, if a symbol/punctuation/etc: return false
+    public Boolean isWord(String w) {
+        return w.length() > 1 && Character.isLetter(w.charAt(0)) || w.length() == 1 && Character.isLetter(w.charAt(0));
+    }
+
+    // EFFECTS: displays current errors in document
     public void showErrors() {
         errors.showErrors(text);
     }
