@@ -67,14 +67,14 @@ public class BeautySpell {
     public void choiceF(Document myDoc) {
         myDoc.fixWhitespace();
         myDoc.fixPunctuationWhitespace();
-        println("Fixed whitespace!");
+        println(">>> Fixed whitespace! <<<");
     }
 
     public void choiceS(Document myDoc) throws FileNotFoundException {
         myDoc.loadDictionary();
         myDoc.breakTextIntoWordArray();
         myDoc.runSpellcheck();
-        println("Ran spellcheck!");
+        println(">>> Ran spellcheck! <<<");
     }
 
     public void choiceE(Document myDoc) {
@@ -83,10 +83,10 @@ public class BeautySpell {
 
     public void printOptions() {
         println("Choose your option:");
-        println("f => Trim whitespace");
-        println("s => Run spellcheck");
-        println("e => Show errors");
-        println("b => Back");
+        println("   f - trim whitespace");
+        println("   s - run spellcheck");
+        println("   e - show errors");
+        println("   b - back");
     }
 
     public void print(String s) {
