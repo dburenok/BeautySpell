@@ -14,8 +14,8 @@ public class Document {
     private ListOfSpellingErrors errors;
     private ArrayList<String> wordsArray;
     private Boolean isSpellchecked;
-
     HashSet<String> wordDictionary;
+
 
     // REQUIRES: text must be size > 0
     public Document(String text) {
@@ -33,20 +33,6 @@ public class Document {
 
     public String getText() {
         return text;
-    }
-
-    // REQUIRES: dictionary.txt file must be present at [project_dir]/data/dictionary.txt
-    // MODIFIES: this.wordDictionary
-    // EFFECTS: loads dictionary into a HashSet
-    // TODO: move this method into DocumentLibrary as it's redundant to load a new dict for each document
-    public void loadDictionary() throws FileNotFoundException {
-        wordDictionary = new HashSet<>();
-        String dictPath = new File("").getAbsolutePath().concat("/data/dictionary.txt");
-        File file = new File(dictPath);
-        Scanner scan = new Scanner(file);
-        while (scan.hasNextLine()) {
-            wordDictionary.add(scan.nextLine().toLowerCase());
-        }
     }
 
     // REQUIRES: s.length() > 0
@@ -72,9 +58,10 @@ public class Document {
 
     // MODIFIES: this
     // EFFECTS: Returns ordered ArrayList with each word and non-letter char broken into separate elements
-    public void breakTextIntoWordArray() {
+    public ArrayList<String> breakTextIntoWordArray() {
         int location = 0;
         StringBuilder currentWord = new StringBuilder();
+        this.wordsArray = new ArrayList<>();
 
         while (location < text.length()) {
 
@@ -84,6 +71,7 @@ public class Document {
 
             if (Character.isLetter(c) || Character.isDigit(c) || c == nonPunctChar) {
                 currentWord.append(c);
+                handleLastWord(location, currentWord);
             } else if (c == ' ') {
                 wordsArray.add(currentWord.toString());
                 insertWhitespaceIfNotOnLastWord(location);
@@ -96,6 +84,15 @@ public class Document {
                 location++;
             }
             location++;
+        }
+        return wordsArray;
+    }
+
+    // MODIFIES: this.wordsArray
+    // EFFECTS: if on last index in string and it's a char, add the string to wordsArray
+    public void handleLastWord(int location, StringBuilder currentWord) {
+        if (location + 1 == text.length()) {
+            wordsArray.add(currentWord.toString());
         }
     }
 
@@ -141,11 +138,20 @@ public class Document {
 
     // EFFECTS: displays current errors in document
     public void showErrors() {
-        errors.showErrors(text);
+        if (!isSpellchecked) {
+            System.out.println();
+            System.out.println("No errors to show! Please run spellcheck first.");
+        } else {
+            errors.showErrors(text);
+        }
     }
 
     public int numErrors() {
         return errors.numErrors();
+    }
+
+    public void addDictionary(HashSet<String> dict) {
+        this.wordDictionary = dict;
     }
 
 }

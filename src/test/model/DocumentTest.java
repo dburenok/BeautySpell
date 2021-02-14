@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DocumentTest {
 
     private Document testDocument;
+    private DocumentLibrary testDocLib;
 
     @BeforeEach
     void runBefore() {}
@@ -83,7 +84,8 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocument.loadDictionary();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
         testDocument.runSpellcheck();
         assertEquals(0, testDocument.numErrors());
     }
@@ -95,7 +97,8 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocument.loadDictionary();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
         testDocument.runSpellcheck();
         assertEquals(2, testDocument.numErrors());
     }
@@ -107,7 +110,8 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocument.loadDictionary();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
         testDocument.runSpellcheck();
         assertEquals(4, testDocument.numErrors());
     }

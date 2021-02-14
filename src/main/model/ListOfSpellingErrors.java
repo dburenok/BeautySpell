@@ -27,6 +27,7 @@ public class ListOfSpellingErrors {
     }
 
     public void showErrors(String text) {
+        System.out.println();
         System.out.println("This document has " + errors.size() + " errors.");
         for (SpellingError e : errors) {
             e.showError(text);
