@@ -9,7 +9,8 @@ public class SpellingError {
 
     // REQUIRES: all parameters must be given at object creation
     // MODIFIES: this
-    // EFFECTS: creats a Spelling Error object with string index of typo start, end, the typo itself and a suggested word
+    // EFFECTS: creats a Spelling Error object with string index of typo start, end, the typo itself and
+    // a suggested word
     public SpellingError(int typoPositionStart, int typoPositionEnd, String typo, String suggestedWord) {
         this.typoPositionStart = typoPositionStart;
         this.typoPositionEnd = typoPositionEnd;
