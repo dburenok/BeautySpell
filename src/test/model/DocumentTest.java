@@ -116,6 +116,36 @@ class DocumentTest {
         assertEquals(4, testDocument.numErrors());
     }
 
+    @Test
+    void testOneWordNoError() throws FileNotFoundException {
+        String text = "oats";
+        testDocument = new Document(text);
+        testDocument.fixWhitespace();
+        testDocument.fixPunctuationWhitespace();
+        testDocument.breakTextIntoWordArray();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
+        testDocument.runSpellcheck();
+        assertEquals(0, testDocument.numErrors());
+        assertEquals(1, testDocument.breakTextIntoWordArray().size());
+        assertEquals(text, testDocument.getText());
+    }
+
+    @Test
+    void testOneWordWithError() throws FileNotFoundException {
+        String text = "oatz";
+        testDocument = new Document(text);
+        testDocument.fixWhitespace();
+        testDocument.fixPunctuationWhitespace();
+        testDocument.breakTextIntoWordArray();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
+        testDocument.runSpellcheck();
+        assertEquals(1, testDocument.numErrors());
+        assertEquals(1, testDocument.breakTextIntoWordArray().size());
+        assertEquals(text, testDocument.getText());
+    }
+
 }
 
 

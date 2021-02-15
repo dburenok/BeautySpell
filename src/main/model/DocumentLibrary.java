@@ -36,6 +36,10 @@ public class DocumentLibrary {
         }
     }
 
+    public Document getLastDocument() {
+        return docs.get(docs.size() - 1);
+    }
+
     // REQUIRES: dictionary.txt file must be present at [project_dir]/data/dictionary.txt
     // MODIFIES: this.wordDictionary
     // EFFECTS: loads dictionary into a HashSet

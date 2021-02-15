@@ -1,17 +1,12 @@
 package model;
 
-import java.io.File;
 import java.util.*;
-
-import java.util.Scanner;
-
-import java.io.FileNotFoundException;
 
 // A document object represented by the text, and a ListOfSpellingErrors
 public class Document {
 
     private String text;
-    private ListOfSpellingErrors errors;
+    private ListOfSpellingErrors listOfErrors;
     private ArrayList<String> wordsArray;
     private Boolean isSpellchecked;
     HashSet<String> wordDictionary;
@@ -22,7 +17,7 @@ public class Document {
         if (text.length() > 0) {
             this.text = text;
             this.wordsArray = new ArrayList<>();
-            this.errors = new ListOfSpellingErrors();
+            this.listOfErrors = new ListOfSpellingErrors();
             isSpellchecked = false;
         }
     }
@@ -38,10 +33,11 @@ public class Document {
     // REQUIRES: s.length() > 0
     // MODIFIES: this
     // EFFECTS: manually replace document text, set isSpellchecked bool to false
-    public String replaceText(String s) {
+    public void replaceText(String s) {
         this.text = s;
         this.isSpellchecked = false;
-        return text;
+        breakTextIntoWordArray();
+        runSpellcheck();
     }
 
     // MODIFIES: this.text
@@ -117,6 +113,7 @@ public class Document {
     // MODIFIES: this
     // EFFECTS: for every array word not in dictionary, new SpellingError object is added to ListOfSpellingErrors
     public void runSpellcheck() {
+        this.listOfErrors = new ListOfSpellingErrors();
         int position = 0;
         for (String w: wordsArray) {
             position += w.length();
@@ -124,7 +121,7 @@ public class Document {
                 if (!wordDictionary.contains(w.toLowerCase())) {
                     // TODO
                     SpellingError error = new SpellingError(position - w.length(), position, w, "NON");
-                    errors.addError(error);
+                    listOfErrors.addError(error);
                 }
             }
         }
@@ -142,12 +139,16 @@ public class Document {
             System.out.println();
             System.out.println("No errors to show! Please run spellcheck first.");
         } else {
-            errors.showErrors(text);
+            listOfErrors.showErrors(text);
         }
     }
 
     public int numErrors() {
-        return errors.numErrors();
+        return listOfErrors.numErrors();
+    }
+
+    public SpellingError getNextError() {
+        return this.listOfErrors.getNextError();
     }
 
     public void addDictionary(HashSet<String> dict) {

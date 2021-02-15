@@ -2,6 +2,7 @@ package ui;
 
 import model.Document;
 import model.DocumentLibrary;
+import model.SpellingError;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class BeautySpell {
             sc = new Scanner(System.in);
             String txt = sc.nextLine();
 
-            println("Thank you! Saving document...");
+            println("Saving document...");
 
             myDoc = new Document(txt);
             myDocLib.addDocument(myDoc);
@@ -47,30 +48,10 @@ public class BeautySpell {
             println("Document saved.");
 
             boolean back = false;
-            while (!back) {
 
-                Document myDoc = myDocLib.getDocument(0);
-                printOptions();
+            Document myDoc = myDocLib.getLastDocument();
+            insideDocumentLoop(back, myDoc);
 
-                sc = new Scanner(System.in);
-                String choice = sc.nextLine();
-
-                switch (choice) {
-                    case "t":
-                        choiceTrim(myDoc);
-                        break;
-                    case "r":
-                        choiceRunSpellcheck(myDoc);
-                        break;
-                    case "s":
-                        choiceShowErrors(myDoc);
-                        break;
-                    case "b":
-                        println("Going back...");
-                        back = true;
-                        break;
-                }
-            }
             println("Your library has " + myDocLib.numDocuments() + " document(s).");
             println("Add new document [a] or quit [q] ?");
             sc = new Scanner(System.in);
@@ -85,6 +66,35 @@ public class BeautySpell {
         }
 
 
+    }
+
+    public void insideDocumentLoop(Boolean back, Document myDoc) {
+        while (!back) {
+
+            printOptions();
+
+            sc = new Scanner(System.in);
+            String choice = sc.nextLine();
+
+            switch (choice) {
+                case "t":
+                    choiceTrim(myDoc);
+                    break;
+                case "r":
+                    choiceRunSpellcheck(myDoc);
+                    break;
+                case "s":
+                    choiceShowErrors(myDoc);
+                    break;
+                case "b":
+                    println("Going back...");
+                    back = true;
+                    break;
+                case "p":
+                    println(myDoc.getText());
+                    break;
+            }
+        }
     }
 
     public void choiceTrim(Document myDoc) {
@@ -103,7 +113,6 @@ public class BeautySpell {
         }
         println();
         print("Running spellcheck...");
-//        myDoc.loadDictionary();
         myDoc.breakTextIntoWordArray();
         myDoc.runSpellcheck();
         println();
@@ -111,13 +120,34 @@ public class BeautySpell {
     }
 
     public void choiceShowErrors(Document myDoc) {
-        myDoc.showErrors();
+
+        if (myDoc.numErrors() > 0) {
+            println("Document has " + myDoc.numErrors() + " errors.");
+            while (myDoc.numErrors() > 0) {
+
+                SpellingError e = myDoc.getNextError();
+                e.showError(myDoc.getText());
+
+                print("Please provide the correct spelling: ");
+                sc = new Scanner(System.in);
+                String correctSpelling = sc.nextLine();
+
+                String oldText = myDoc.getText();
+                String newText = oldText.substring(0, e.typoPositionStart())
+                        + correctSpelling + oldText.substring(e.typoPositionEnd());
+                myDoc.replaceText(newText);
+
+                println("Spelling fixed!");
+                println("Document now has " + myDoc.numErrors() + " errors.");
+            }
+        } else {
+            println("Document has no errors!");
+        }
     }
 
     public void printOptions() {
         println();
-        println("Choose your option:");
-        println("   [t] trim whitespace, [r] - run spellcheck, [s] - show errors, [b] - back");
+        println("[t] trim whitespace, [r] - run spellcheck, [s] - show errors, [p] - print document, [b] - back");
         println();
     }
 

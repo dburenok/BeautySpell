@@ -15,7 +15,9 @@ public class ListOfSpellingErrors {
     }
 
     public SpellingError getNextError() {
-        return errors.get(0);
+        SpellingError e = errors.get(0);
+        errors.remove(0);
+        return e;
     }
 
     public void addError(SpellingError e) {
