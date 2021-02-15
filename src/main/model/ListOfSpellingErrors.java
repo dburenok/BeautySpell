@@ -10,24 +10,28 @@ public class ListOfSpellingErrors {
         this.errors = new ArrayList<>();
     }
 
+    // EFFECTS: returns number of SpellingError objects
     public int numErrors() {
         return errors.size();
     }
 
+    // REQUIRES: errors not empty
+    // MODIFIES: this
+    // EFFECTS: remove the first error in list, return it
     public SpellingError getNextError() {
         SpellingError e = errors.get(0);
         errors.remove(0);
         return e;
     }
 
+    // MODIFIES: this
+    // EFFECTS: add given spelling error to error list
     public void addError(SpellingError e) {
         this.errors.add(e);
     }
 
-//    public void deleteFirstError() {
-//        this.errors.remove(0);
-//    }
-
+    // REQUIRES: errors not empty
+    // EFFECTS: display errors to console.
     public void showErrors(String text) {
         System.out.println();
         System.out.println("This document has " + errors.size() + " errors.");

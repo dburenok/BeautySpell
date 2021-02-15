@@ -22,16 +22,14 @@ public class BeautySpell {
         runBeautySpell();
     }
 
+    // EFFECTS: begins the program loop
     public void runBeautySpell() throws FileNotFoundException {
-
         println("Welcome to BeautySpell!");
-
         DocumentLibrary myDocLib = new DocumentLibrary();
-
         mainLoop(myDocLib);
-
     }
 
+    // EFFECTS: main program loop, begins after welcome message
     public void mainLoop(DocumentLibrary myDocLib) {
 
         while (running) {
@@ -68,6 +66,7 @@ public class BeautySpell {
 
     }
 
+    // EFFECTS: program loop when working on a document
     public void insideDocumentLoop(Boolean back, Document myDoc) {
         while (!back) {
 
@@ -97,6 +96,9 @@ public class BeautySpell {
         }
     }
 
+    // REQUIRES: myDoc.text not empty
+    // MODIFIES: myDoc
+    // EFFECTS: User selected: t - trim whitespace
     public void choiceTrim(Document myDoc) {
         myDoc.fixWhitespace();
         myDoc.fixPunctuationWhitespace();
@@ -105,6 +107,9 @@ public class BeautySpell {
         println(">>> Trimmed whitespace! <<<");
     }
 
+    // REQUIRES: myDoc.text not empty
+    // MODIFIES: myDoc
+    // EFFECTS: User selected: r - run spellcheck
     public void choiceRunSpellcheck(Document myDoc) {
         if (!trimmed) {
             println();
@@ -119,8 +124,10 @@ public class BeautySpell {
         println(">>> Ran spellcheck! " + myDoc.numErrors() + " error(s) found. <<<");
     }
 
+    // REQUIRES: myDoc.text not empty
+    // MODIFIES: myDoc
+    // EFFECTS: User selected: s - show errors
     public void choiceShowErrors(Document myDoc) {
-
         if (myDoc.numErrors() > 0) {
             println("Document has " + myDoc.numErrors() + " errors.");
             while (myDoc.numErrors() > 0) {
@@ -145,20 +152,24 @@ public class BeautySpell {
         }
     }
 
+    // EFFECTS: prints user selection choices to console
     public void printOptions() {
         println();
         println("[t] trim whitespace, [r] - run spellcheck, [s] - show errors, [p] - print document, [b] - back");
         println();
     }
 
+    // EFFECTS: helper method that prints given string to console, no newline
     public void print(String s) {
         System.out.print(s);
     }
 
+    // EFFECTS: helper method that prints given string to console, with newline
     public void println(String s) {
         System.out.println(s);
     }
 
+    // EFFECTS: helper method that prints a blank newline to console
     public void println() {
         System.out.println();
     }

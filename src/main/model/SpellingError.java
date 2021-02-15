@@ -18,11 +18,8 @@ public class SpellingError {
         this.suggestedWord = suggestedWord;
     }
 
-    // REQURIES:
-    // MODIFIES:
-    // EFFECTS:
+    // EFFECTS: print the spelling error to console, along with the text around it
     public void showError(String text) {
-
         final int previewRange = 15;
 
         if (typoPositionStart > previewRange & text.length() > previewRange * 3) {
@@ -32,18 +29,20 @@ public class SpellingError {
         } else {
             System.out.println("\"...{ " + text.substring(typoPositionStart, typoPositionEnd) + " }...\"");
         }
-
 //        System.out.println("Typo: { " + typo + " } at index " + typoPositionStart + " in text.");
     }
 
+    // EFFECTS: returns typo text
     public String getTypoText() {
         return typo;
     }
 
+    // EFFECTS: returns typo position start in text
     public int typoPositionStart() {
         return typoPositionStart;
     }
 
+    // EFFECTS: returns typo position end in text
     public int typoPositionEnd() {
         return typoPositionEnd;
     }

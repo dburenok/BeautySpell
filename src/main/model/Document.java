@@ -22,10 +22,12 @@ public class Document {
         }
     }
 
+    // EFFECTS: returns the array of words
     public ArrayList<String> getWordsArray() {
         return this.wordsArray;
     }
 
+    // EFFECTS: returns the document text
     public String getText() {
         return text;
     }
@@ -52,6 +54,7 @@ public class Document {
         text = text.replaceAll("\\s+(?=\\p{Punct})", "");
     }
 
+    // REQUIRES: this.text not empty
     // MODIFIES: this
     // EFFECTS: Returns ordered ArrayList with each word and non-letter char broken into separate elements
     public ArrayList<String> breakTextIntoWordArray() {
@@ -84,6 +87,7 @@ public class Document {
         return wordsArray;
     }
 
+    // REQUIRES: this.text not empty, wordsArray not empty
     // MODIFIES: this.wordsArray
     // EFFECTS: if on last index in string and it's a char, add the string to wordsArray
     public void handleLastWord(int location, StringBuilder currentWord) {
@@ -92,6 +96,7 @@ public class Document {
         }
     }
 
+    // REQUIRES: this.text not empty, wordsArray not empty
     // MODIFIES: this.wordsArray
     // EFFECTS: if while loop not on last word, add a whitespace to the wordsArray. On the last word, we don't do that.
     public void insertWhitespaceIfNotOnLastWord(int location) {
@@ -100,6 +105,7 @@ public class Document {
         }
     }
 
+    // REQUIRES: wordsArray not empty
     // EFFECTS: returns the rebuilt string from the wordsArray - mostly for consistency and testing
     public String putWordArrayBackTogether() {
         StringBuilder putBack = new StringBuilder();
@@ -136,8 +142,6 @@ public class Document {
         return w.length() > 1 && Character.isLetter(w.charAt(0)) || w.length() == 1 && Character.isLetter(w.charAt(0));
     }
 
-    // REQUIRES:
-    // MODIFIES:
     // EFFECTS: displays current errors in document
     public Boolean showErrors() {
         if (!isSpellchecked) {
@@ -149,18 +153,24 @@ public class Document {
         }
     }
 
+    // EFFECTS: returns number of errors in document
     public int numErrors() {
         return listOfErrors.numErrors();
     }
 
+    // EFFECTS: returns true if document has errors, false otherwise
     public boolean hasErrors() {
         return hasErrors;
     }
 
+    // REQUIRES: listOfErrors not empty
+    // EFFECTS: returns the next error to work on
     public SpellingError getNextError() {
         return this.listOfErrors.getNextError();
     }
 
+    // MODIFIES: this
+    // EFFECTS: receives and saves the word dictionary from DocumentLibrary to be used for spellcheck
     public void addDictionary(HashSet<String> dict) {
         this.wordDictionary = dict;
     }
