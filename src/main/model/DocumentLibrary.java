@@ -28,13 +28,13 @@ public class DocumentLibrary {
         return docs.size();
     }
 
-    public Document getDocument(int index) {
-        if (index + 1 <= docs.size()) {
-            return docs.get(index);
-        } else {
-            return null;
-        }
-    }
+//    public Document getDocument(int index) {
+//        if (index + 1 <= docs.size()) {
+//            return docs.get(index);
+//        } else {
+//            return null;
+//        }
+//    }
 
     public Document getLastDocument() {
         return docs.get(docs.size() - 1);

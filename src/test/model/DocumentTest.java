@@ -125,7 +125,9 @@ class DocumentTest {
         testDocument.breakTextIntoWordArray();
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
+        assertFalse(testDocument.showErrors());
         testDocument.runSpellcheck();
+        assertTrue(testDocument.showErrors());
         assertEquals(0, testDocument.numErrors());
         assertEquals(1, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
@@ -140,10 +142,78 @@ class DocumentTest {
         testDocument.breakTextIntoWordArray();
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
+        assertFalse(testDocument.showErrors());
         testDocument.runSpellcheck();
+        assertTrue(testDocument.showErrors());
         assertEquals(1, testDocument.numErrors());
         assertEquals(1, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
+        assertEquals("oatz", testDocument.getNextError().getTypoText());
+    }
+
+    @Test
+    void testReplaceText() throws FileNotFoundException {
+        String text = "Some text here.";
+        testDocument = new Document(text);
+        testDocument.fixWhitespace();
+        testDocument.fixPunctuationWhitespace();
+        testDocument.breakTextIntoWordArray();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
+        assertFalse(testDocument.showErrors());
+        testDocument.runSpellcheck();
+        assertTrue(testDocument.showErrors());
+        assertEquals(0, testDocument.numErrors());
+        assertEquals(6, testDocument.breakTextIntoWordArray().size());
+        assertEquals(text, testDocument.getText());
+        text = "Now we get new text!";
+        testDocument.replaceText(text);
+        assertTrue(testDocument.showErrors());
+        assertEquals(0, testDocument.numErrors());
+        assertEquals(10, testDocument.breakTextIntoWordArray().size());
+        assertEquals(text, testDocument.getText());
+    }
+
+    @Test
+    void testDocumentLibrary() throws FileNotFoundException {
+        String text = "Some text.";
+        testDocument = new Document(text);
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
+        assertEquals(1, testDocLib.numDocuments());
+        assertEquals(testDocument, testDocLib.getLastDocument());
+    }
+
+    @Test
+    void testTypoPositions() throws FileNotFoundException {
+        String text = "i haz stuff";
+        testDocument = new Document(text);
+        testDocument.fixWhitespace();
+        testDocument.fixPunctuationWhitespace();
+        testDocument.breakTextIntoWordArray();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
+        testDocument.runSpellcheck();
+        assertTrue(testDocument.hasErrors());
+        SpellingError e = testDocument.getNextError();
+        assertEquals(2, e.typoPositionStart());
+        assertEquals(5, e.typoPositionEnd());
+    }
+
+    @Test
+    void longTextWithTypo() throws FileNotFoundException {
+        String text = "This is going to be a very long text and a typo will appear heeere. Now that we have made the " +
+                "typo, we will continue to write in here.";
+        testDocument = new Document(text);
+        testDocument.fixWhitespace();
+        testDocument.fixPunctuationWhitespace();
+        testDocument.breakTextIntoWordArray();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
+        testDocument.runSpellcheck();
+        SpellingError e = testDocument.getNextError();
+        e.showError(testDocument.getText());
+        assertTrue(testDocument.hasErrors());
     }
 
 }

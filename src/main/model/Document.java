@@ -10,7 +10,7 @@ public class Document {
     private ArrayList<String> wordsArray;
     private Boolean isSpellchecked;
     HashSet<String> wordDictionary;
-
+    private boolean hasErrors;
 
     // REQUIRES: text must be size > 0
     public Document(String text) {
@@ -119,13 +119,16 @@ public class Document {
             position += w.length();
             if (isWord(w)) {
                 if (!wordDictionary.contains(w.toLowerCase())) {
-                    // TODO
+                    hasErrors = true;
                     SpellingError error = new SpellingError(position - w.length(), position, w, "NON");
                     listOfErrors.addError(error);
                 }
             }
         }
         isSpellchecked = true;
+        if (numErrors() == 0) {
+            hasErrors = false;
+        }
     }
 
     // EFFECTS: Helper method: if current word is an actual word return true, if a symbol/punctuation/etc: return false
@@ -133,18 +136,25 @@ public class Document {
         return w.length() > 1 && Character.isLetter(w.charAt(0)) || w.length() == 1 && Character.isLetter(w.charAt(0));
     }
 
+    // REQUIRES:
+    // MODIFIES:
     // EFFECTS: displays current errors in document
-    public void showErrors() {
+    public Boolean showErrors() {
         if (!isSpellchecked) {
-            System.out.println();
             System.out.println("No errors to show! Please run spellcheck first.");
+            return false;
         } else {
             listOfErrors.showErrors(text);
+            return true;
         }
     }
 
     public int numErrors() {
         return listOfErrors.numErrors();
+    }
+
+    public boolean hasErrors() {
+        return hasErrors;
     }
 
     public SpellingError getNextError() {

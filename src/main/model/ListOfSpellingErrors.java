@@ -24,9 +24,9 @@ public class ListOfSpellingErrors {
         this.errors.add(e);
     }
 
-    public void deleteFirstError() {
-        this.errors.remove(0);
-    }
+//    public void deleteFirstError() {
+//        this.errors.remove(0);
+//    }
 
     public void showErrors(String text) {
         System.out.println();
