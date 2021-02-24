@@ -20,16 +20,15 @@ public class SpellingError {
 
     // EFFECTS: print the spelling error to console, along with the text around it
     public void showError(String text) {
-        final int previewRange = 15;
+        final int previewRange = 5;
 
-        if (typoPositionStart > previewRange & text.length() > previewRange * 3) {
+        if (typoPositionStart - previewRange > 0 & typoPositionEnd + previewRange < text.length()) {
             System.out.println("\"..." + text.substring(typoPositionStart - previewRange, typoPositionStart)
                     + " { " + text.substring(typoPositionStart, typoPositionEnd) + " } "
                     + text.substring(typoPositionEnd, typoPositionEnd + previewRange) + "...\"");
         } else {
             System.out.println("\"...{ " + text.substring(typoPositionStart, typoPositionEnd) + " }...\"");
         }
-//        System.out.println("Typo: { " + typo + " } at index " + typoPositionStart + " in text.");
     }
 
     // EFFECTS: returns typo text
