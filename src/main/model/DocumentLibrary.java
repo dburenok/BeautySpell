@@ -52,7 +52,7 @@ public class DocumentLibrary {
     // EFFECTS: loads dictionary into a HashSet
     public void loadDictionary() throws FileNotFoundException {
         wordDictionary = new HashSet<>();
-        String dictPath = new File("").getAbsolutePath().concat("/data/dictionary.txt");
+        String dictPath = new File("").getAbsolutePath().concat("/data/dictionary_new.txt");
         File file = new File(dictPath);
         Scanner scan = new Scanner(file);
         while (scan.hasNextLine()) {
