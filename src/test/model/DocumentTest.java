@@ -92,7 +92,7 @@ class DocumentTest {
 
     @Test
     void testTwoSpellingErrors() throws FileNotFoundException {
-        String text = "Thiss sentence haz two typos.";
+        String text = "Thiss sentence hazz two typos.";
         testDocument = new Document(text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();

@@ -1,5 +1,6 @@
 package model;
 
+// SpellingError object which holds the typo and where it is positioned in the text
 public class SpellingError {
 
     private final int typoPositionStart;
@@ -20,7 +21,7 @@ public class SpellingError {
 
     // EFFECTS: print the spelling error to console, along with the text around it
     public void showError(String text) {
-        final int previewRange = 5;
+        final int previewRange = 10;
 
         if (typoPositionStart - previewRange > 0 & typoPositionEnd + previewRange < text.length()) {
             System.out.println("\"..." + text.substring(typoPositionStart - previewRange, typoPositionStart)

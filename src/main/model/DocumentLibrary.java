@@ -1,13 +1,12 @@
 package model;
 
-// Library of documents
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 
+// Library of document objects, also holds the dictionary
 public class DocumentLibrary {
 
     ArrayList<Document> docs;
@@ -52,7 +51,7 @@ public class DocumentLibrary {
     // EFFECTS: loads dictionary into a HashSet
     public void loadDictionary() throws FileNotFoundException {
         wordDictionary = new HashSet<>();
-        String dictPath = new File("").getAbsolutePath().concat("/data/dictionary_new.txt");
+        String dictPath = new File("").getAbsolutePath().concat("/data/dictionary.txt");
         File file = new File(dictPath);
         Scanner scan = new Scanner(file);
         while (scan.hasNextLine()) {

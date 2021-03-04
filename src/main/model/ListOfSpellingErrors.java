@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
+// List of Spelling Error objects, handles adding and showing number of errors
 public class ListOfSpellingErrors {
 
     private ArrayList<SpellingError> errors;
