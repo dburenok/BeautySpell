@@ -19,3 +19,6 @@ I'm interested in this project because I want to learn how to implement a word s
 - As a user, I want to select a previously saved document and check how many typos are present in it
 - As a user, I want to remove and trim unnecessary whitespace in a document
 - As a user, I want to make sure the periods and commas in a document are placed correctly
+
+- As a user, I want to save the document library to file
+- As a user, I want to open a previously saved document library and continue working on it

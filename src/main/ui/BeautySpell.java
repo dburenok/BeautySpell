@@ -33,37 +33,46 @@ public class BeautySpell {
     public void mainLoop(DocumentLibrary myDocLib) {
 
         while (running) {
-            print("Please enter (or paste) your document: ");
-
-            sc = new Scanner(System.in);
-            String txt = sc.nextLine();
-
-            println("Saving document...");
-
-            myDoc = new Document(txt);
-            myDocLib.addDocument(myDoc);
-
-            println("Document saved.");
-
-            boolean back = false;
-
-            Document myDoc = myDocLib.getLastDocument();
-            insideDocumentLoop(back, myDoc);
 
             println("Your library has " + myDocLib.numDocuments() + " document(s).");
-            println("Add new document [a] or quit [q] ?");
+            println("[o] - open a document, [a] - add new document, [q] quit");
             sc = new Scanner(System.in);
             String choice = sc.nextLine();
+            boolean back = false;
             switch (choice) {
                 case "a":
+                    print("Please enter (or paste) your document: ");
+
+                    sc = new Scanner(System.in);
+                    String txt = sc.nextLine();
+
+                    println("Saving document...");
+
+                    myDoc = new Document(txt);
+                    myDocLib.addDocument(myDoc);
+
+                    println("Document saved.");
+
+                    Document myDoc = myDocLib.getLastDocument();
+                    insideDocumentLoop(back, myDoc);
+                    break;
+                case "o":
+                    if (myDocLib.numDocuments() == 0) {
+                        //println("You have no documents in your library.");
+                        //mainLoop(myDocLib);
+                        break;
+                    }
+                    println("You have " + myDocLib.numDocuments() + " in your library. Which one do you want to open?");
+                    sc = new Scanner(System.in);
+                    int docNum = Integer.parseInt(sc.nextLine());
+                    myDoc = myDocLib.getDocument(docNum);
+                    insideDocumentLoop(back, myDoc);
                     break;
                 case "q":
                     running = false;
                     break;
             }
         }
-
-
     }
 
     // EFFECTS: program loop when working on a document

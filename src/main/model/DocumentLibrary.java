@@ -1,5 +1,8 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -32,13 +35,9 @@ public class DocumentLibrary {
     }
 
     // TODO - specify and implement manual document selection
-//    public Document getDocument(int index) {
-//        if (index + 1 <= docs.size()) {
-//            return docs.get(index);
-//        } else {
-//            return null;
-//        }
-//    }
+    public Document getDocument(int index) {
+        return docs.get(index);
+    }
 
     // REQUIRES: docs not empty
     // EFFECTS: Returns the last document in library
@@ -57,6 +56,29 @@ public class DocumentLibrary {
         while (scan.hasNextLine()) {
             wordDictionary.add(scan.nextLine().toLowerCase());
         }
+    }
+
+    //TODO
+
+    public JSONObject toJson() {
+//        JSONObject json = new JSONObject();
+//        json.put("name", name);
+//        json.put("thingies", thingiesToJson());
+//        return json;
+        return new JSONObject();
+    }
+
+    //TODO
+    // EFFECTS: returns things in this workroom as a JSON array
+    private JSONArray thingiesToJson() {
+//        JSONArray jsonArray = new JSONArray();
+//
+//        for (Thingy t : thingies) {
+//            jsonArray.put(t.toJson());
+//        }
+//
+//        return jsonArray;
+        return new JSONArray();
     }
 
 }
