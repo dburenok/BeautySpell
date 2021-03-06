@@ -3,6 +3,8 @@ package ui;
 import model.Document;
 import model.DocumentLibrary;
 import model.SpellingError;
+import persistence.DocReader;
+import persistence.DocWriter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,11 +14,17 @@ import java.util.*;
 // dont need to test this
 public class BeautySpell {
 
+    private static final String JSON_STORE = "./data/doclibrary.json";
+
     private boolean running = true;
     private boolean trimmed = false;
+    DocumentLibrary myDocLib;
     private boolean spellchecked = false;
+    private DocWriter docWriter;
+    private DocReader docReader;
     Scanner sc;
     Document myDoc;
+
 
     public BeautySpell() throws IOException {
         runBeautySpell();
@@ -25,53 +33,107 @@ public class BeautySpell {
     // EFFECTS: begins the program loop
     public void runBeautySpell() throws FileNotFoundException {
         println("Welcome to BeautySpell!");
-        DocumentLibrary myDocLib = new DocumentLibrary();
+        myDocLib = new DocumentLibrary();
+        docWriter = new DocWriter(JSON_STORE);
+        docReader = new DocReader(JSON_STORE);
         mainLoop(myDocLib);
     }
 
     // EFFECTS: main program loop, begins after welcome message
     public void mainLoop(DocumentLibrary myDocLib) {
-
         while (running) {
 
             println("Your library has " + myDocLib.numDocuments() + " document(s).");
-            println("[o] - open a document, [a] - add new document, [q] quit");
+            println("[l] - load library, [s] - save library, [o] - open a document, [a] - add new document, [q] quit");
             sc = new Scanner(System.in);
             String choice = sc.nextLine();
             boolean back = false;
-            switch (choice) {
-                case "a":
-                    print("Please enter (or paste) your document: ");
+            switchChoices(choice, myDocLib, back);
+        }
+    }
 
-                    sc = new Scanner(System.in);
-                    String txt = sc.nextLine();
-
-                    println("Saving document...");
-
-                    myDoc = new Document(txt);
-                    myDocLib.addDocument(myDoc);
-
-                    println("Document saved.");
-
-                    Document myDoc = myDocLib.getLastDocument();
-                    insideDocumentLoop(back, myDoc);
-                    break;
-                case "o":
-                    if (myDocLib.numDocuments() == 0) {
-                        //println("You have no documents in your library.");
-                        //mainLoop(myDocLib);
-                        break;
-                    }
-                    println("You have " + myDocLib.numDocuments() + " in your library. Which one do you want to open?");
-                    sc = new Scanner(System.in);
-                    int docNum = Integer.parseInt(sc.nextLine());
-                    myDoc = myDocLib.getDocument(docNum);
-                    insideDocumentLoop(back, myDoc);
-                    break;
-                case "q":
-                    running = false;
-                    break;
+    public void switchChoices(String choice, DocumentLibrary dl, boolean back) {
+        switch (choice) {
+            case "s": {
+                saveDocumentLibrary(dl);
+                break;
             }
+            case "l": {
+                loadDocumentLibrary();
+                break;
+            }
+            case "a":
+                addNewDocument(dl, back);
+                break;
+            case "o":
+                openDocument(dl, back);
+                break;
+            case "q":
+                running = false;
+                break;
+        }
+    }
+
+    //
+    public void openDocument(DocumentLibrary dl, boolean back) {
+        if (dl.numDocuments() == 0) {
+            return;
+        }
+        boolean open = false;
+        while (!open) {
+            println("You have " + dl.numDocuments() + " in your library. Which one do you want to open?");
+            sc = new Scanner(System.in);
+            int docNum = Integer.parseInt(sc.nextLine());
+            if (docNum > myDocLib.numDocuments()) {
+                System.out.println("Document doesn't exist!");
+            } else {
+                myDoc = dl.getDocument(docNum);
+                open = true;
+                insideDocumentLoop(back, myDoc);
+            }
+        }
+    }
+
+
+    //
+    public void addNewDocument(DocumentLibrary dl, boolean back) {
+        print("Please enter (or paste) your document: ");
+
+        sc = new Scanner(System.in);
+        String txt = sc.nextLine();
+
+        println("Saving document...");
+
+        myDoc = new Document(txt);
+        dl.addDocument(myDoc);
+
+        println("Document saved.");
+
+        Document myDoc = dl.getLastDocument();
+        insideDocumentLoop(back, myDoc);
+    }
+
+    // EFFECTS: saves the workroom to file
+    private void saveDocumentLibrary(DocumentLibrary dl) {
+        try {
+            docWriter.open();
+            docWriter.write(dl);
+            docWriter.close();
+            System.out.println("Saved document library to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads workroom from file
+    private void loadDocumentLibrary() {
+        try {
+            myDocLib = docReader.read();
+            System.out.println("Loaded Document Library from " + JSON_STORE);
+            mainLoop(myDocLib);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 

@@ -6,6 +6,8 @@ import java.io.*;
 
 //TODO
 
+// Represents a writer that writes JSON representation of workroom to file
+// Code taken partially from https://github.com/stleary/JSON-java
 public class DocWriter {
     private static final int TAB = 4;
     private PrintWriter writer;

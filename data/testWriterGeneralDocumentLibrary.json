@@ -1,0 +1,13 @@
+{
+    "documents": [
+        {
+            "hasErrors": false,
+            "text": "Here is some text."
+        },
+        {
+            "hasErrors": false,
+            "text": "Here is some more cool text."
+        }
+    ],
+    "name": "DocumentLibrary"
+}

@@ -61,24 +61,22 @@ public class DocumentLibrary {
     //TODO
 
     public JSONObject toJson() {
-//        JSONObject json = new JSONObject();
-//        json.put("name", name);
-//        json.put("thingies", thingiesToJson());
-//        return json;
-        return new JSONObject();
+        JSONObject json = new JSONObject();
+        json.put("name", "DocumentLibrary");
+        json.put("documents", documentsToJson());
+        return json;
     }
 
     //TODO
     // EFFECTS: returns things in this workroom as a JSON array
-    private JSONArray thingiesToJson() {
-//        JSONArray jsonArray = new JSONArray();
-//
-//        for (Thingy t : thingies) {
-//            jsonArray.put(t.toJson());
-//        }
-//
-//        return jsonArray;
-        return new JSONArray();
+    private JSONArray documentsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Document d : docs) {
+            jsonArray.put(d.toJson());
+        }
+
+        return jsonArray;
     }
 
 }

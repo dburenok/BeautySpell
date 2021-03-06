@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 import java.util.*;
 
 // A document object represented by the text, and a ListOfSpellingErrors
@@ -20,6 +22,15 @@ public class Document {
             this.listOfErrors = new ListOfSpellingErrors();
             isSpellchecked = false;
         }
+    }
+
+    // TODO comments
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        //json.put("name", "document name");
+        json.put("text", text);
+        json.put("hasErrors", hasErrors);
+        return json;
     }
 
     // EFFECTS: returns the array of words
