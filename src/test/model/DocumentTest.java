@@ -35,7 +35,7 @@ class DocumentTest {
 
     @Test
     void testCleanWhitespace() {
-        String text = " This is a nice freakin' car  right here , boss . Where's that 200 dollar car? 40% off, right? ";
+        String text = " This is a nice freakin' car  right  here , boss . Where's that 200 dollar car? 40% off, right? ";
         testDocument = new Document(text);
         String correctText = "This is a nice freakin' car right here, boss. Where's that 200 dollar car? 40% off, right?";
         testDocument.fixWhitespace();
@@ -91,6 +91,19 @@ class DocumentTest {
     }
 
     @Test
+    void testOneSpellingError() throws FileNotFoundException {
+        String text = "This shirt cost me $40 dollarz.";
+        testDocument = new Document(text);
+        testDocument.fixWhitespace();
+        testDocument.fixPunctuationWhitespace();
+        testDocument.breakTextIntoWordArray();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
+        testDocument.runSpellcheck();
+        assertEquals(1, testDocument.numErrors());
+    }
+
+    @Test
     void testTwoSpellingErrors() throws FileNotFoundException {
         String text = "Thiss sentence hazz two typos.";
         testDocument = new Document(text);
@@ -135,7 +148,7 @@ class DocumentTest {
 
     @Test
     void testOneWordWithError() throws FileNotFoundException {
-        String text = "oatz";
+        String text = "oat1";
         testDocument = new Document(text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
@@ -148,7 +161,7 @@ class DocumentTest {
         assertEquals(1, testDocument.numErrors());
         assertEquals(1, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
-        assertEquals("oatz", testDocument.getNextError().getTypoText());
+        assertEquals("oat1", testDocument.getNextError().getTypoText());
     }
 
     @Test
