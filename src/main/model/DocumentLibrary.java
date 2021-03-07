@@ -34,7 +34,8 @@ public class DocumentLibrary {
         return docs.size();
     }
 
-    // TODO - specify and implement manual document selection
+    // REQUIRES: index must be non-negative integer and less than docs.size()
+    // EFFECTS: returns specific document from library
     public Document getDocument(int index) {
         return docs.get(index);
     }
@@ -58,8 +59,7 @@ public class DocumentLibrary {
         }
     }
 
-    //TODO
-
+    // EFFECTS: converts self to json object
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("name", "DocumentLibrary");
@@ -67,8 +67,7 @@ public class DocumentLibrary {
         return json;
     }
 
-    //TODO
-    // EFFECTS: returns things in this workroom as a JSON array
+    // EFFECTS: returns documents in this DocumentLibrary as a JSON array
     private JSONArray documentsToJson() {
         JSONArray jsonArray = new JSONArray();
 

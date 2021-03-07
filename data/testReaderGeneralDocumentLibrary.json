@@ -1,13 +1,15 @@
 {
-    "documents": [
-        {
-            "hasErrors": false,
-            "text": "This is some text,"
-        },
-        {
-            "hasErrors": false,
-            "text": "Here is some moreeee text."
-        }
-    ],
-    "name": "DocumentLibrary"
+  "documents": [
+    {
+      "name": "Test Document",
+      "hasErrors": false,
+      "text": "This is some text,"
+    },
+    {
+      "name": "Test Document 2",
+      "hasErrors": false,
+      "text": "Here is some moreeee text."
+    }
+  ],
+  "name": "DocumentLibrary"
 }

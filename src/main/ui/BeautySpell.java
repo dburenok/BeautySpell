@@ -97,14 +97,17 @@ public class BeautySpell {
 
     //
     public void addNewDocument(DocumentLibrary dl, boolean back) {
-        print("Please enter (or paste) your document: ");
+        print("Please name your document: ");
+        sc = new Scanner(System.in);
+        String docName = sc.nextLine();
 
+        print("Please enter (or paste) the text of your document: ");
         sc = new Scanner(System.in);
         String txt = sc.nextLine();
 
         println("Saving document...");
 
-        myDoc = new Document(txt);
+        myDoc = new Document(txt, docName);
         dl.addDocument(myDoc);
 
         println("Document saved.");

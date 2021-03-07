@@ -8,6 +8,7 @@ import java.util.*;
 public class Document {
 
     private String text;
+    private String name;
     private ListOfSpellingErrors listOfErrors;
     private ArrayList<String> wordsArray;
     private Boolean isSpellchecked;
@@ -24,10 +25,21 @@ public class Document {
         }
     }
 
-    // TODO comments
+    // REQUIRES: text must be size > 0
+    public Document(String text, String name) {
+        if (text.length() > 0) {
+            this.text = text;
+            this.name = name;
+            this.wordsArray = new ArrayList<>();
+            this.listOfErrors = new ListOfSpellingErrors();
+            isSpellchecked = false;
+        }
+    }
+
+    // EFFECTS: converts self to json object
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        //json.put("name", "document name");
+        json.put("name", name);
         json.put("text", text);
         json.put("hasErrors", hasErrors);
         return json;

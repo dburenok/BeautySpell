@@ -24,7 +24,7 @@ public class DocWriterTest {
     }
 
     @Test
-    void testWriterEmptyWorkroom() {
+    void testWriterEmptyDocumentLibrary() {
         try {
             DocumentLibrary dl = new DocumentLibrary();
             DocWriter writer = new DocWriter("./data/testWriterEmptyDocumentLibrary.json");
@@ -41,11 +41,11 @@ public class DocWriterTest {
     }
 
     @Test
-    void testWriterGeneralWorkroom() {
+    void testWriterGeneralDocumentLibrary() {
         try {
             DocumentLibrary dl = new DocumentLibrary();
-            dl.addDocument(new Document("Here is some text."));
-            dl.addDocument(new Document("Here is some more cool text."));
+            dl.addDocument(new Document("Here is some text.", "Test Document"));
+            dl.addDocument(new Document("Here is some more cool text.", "Test Document 2"));
             DocWriter writer = new DocWriter("./data/testWriterGeneralDocumentLibrary.json");
             writer.open();
             writer.write(dl);
