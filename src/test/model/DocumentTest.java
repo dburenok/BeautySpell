@@ -165,6 +165,12 @@ class DocumentTest {
     }
 
     @Test
+    void testDocumentLengthZero() throws FileNotFoundException {
+        testDocument = new Document("", "name1");
+        assertNull(testDocument.getText());
+    }
+
+    @Test
     void testReplaceText() throws FileNotFoundException {
         String text = "Some text here.";
         testDocument = new Document(text);
