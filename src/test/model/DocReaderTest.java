@@ -25,7 +25,7 @@ public class DocReaderTest {
 
     @Test
     void testReaderEmptyDocumentLibrary() {
-        DocReader reader = new DocReader("./data/testReaderEmptyDocumentLibrary.json");
+        DocReader reader = new DocReader("./data/test/testReaderEmptyDocumentLibrary.json");
         try {
             DocumentLibrary dl = reader.read();
             assertEquals(0, dl.numDocuments());
@@ -36,7 +36,7 @@ public class DocReaderTest {
 
     @Test
     void testReaderGeneralDocumentLibrary() {
-        DocReader reader = new DocReader("./data/testReaderGeneralDocumentLibrary.json");
+        DocReader reader = new DocReader("./data/test/testReaderGeneralDocumentLibrary.json");
         try {
             DocumentLibrary dl = reader.read();
             assertEquals(2, dl.numDocuments());

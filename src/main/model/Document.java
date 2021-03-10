@@ -50,19 +50,22 @@ public class Document {
         return this.wordsArray;
     }
 
-    // EFFECTS: returns the document text
     public String getText() {
         return text;
+    }
+
+    public String getName() {
+        return name;
     }
 
     // REQUIRES: s.length() > 0
     // MODIFIES: this
     // EFFECTS: manually replace document text, set isSpellchecked bool to false
-    public void replaceText(String s) {
+    public void replaceText(String s, DocumentLibrary docLib) {
         this.text = s;
         this.isSpellchecked = false;
         breakTextIntoWordArray();
-        runSpellcheck();
+        docLib.runSpellcheck(this);
     }
 
     // MODIFIES: this.text
@@ -138,27 +141,27 @@ public class Document {
         return putBack.toString();
     }
 
-    // REQUIRES: this.text.length() > 0
-    // MODIFIES: this
-    // EFFECTS: for every array word not in dictionary, new SpellingError object is added to ListOfSpellingErrors
-    public void runSpellcheck() {
-        this.listOfErrors = new ListOfSpellingErrors();
-        int position = 0;
-        for (String w: wordsArray) {
-            position += w.length();
-            if (isWord(w)) {
-                if (!wordDictionary.contains(w.toLowerCase())) {
-                    hasErrors = true;
-                    SpellingError error = new SpellingError(position - w.length(), position, w, "NON");
-                    listOfErrors.addError(error);
-                }
-            }
-        }
-        isSpellchecked = true;
-        if (numErrors() == 0) {
-            hasErrors = false;
-        }
-    }
+//    // REQUIRES: this.text.length() > 0
+//    // MODIFIES: this
+//    // EFFECTS: for every array word not in dictionary, new SpellingError object is added to ListOfSpellingErrors
+//    public void runSpellcheck() {
+//        this.listOfErrors = new ListOfSpellingErrors();
+//        int position = 0;
+//        for (String w: wordsArray) {
+//            position += w.length();
+//            if (isWord(w)) {
+//                if (!wordDictionary.contains(w.toLowerCase())) {
+//                    hasErrors = true;
+//                    SpellingError error = new SpellingError(position - w.length(), position, w, "NON");
+//                    listOfErrors.addError(error);
+//                }
+//            }
+//        }
+//        isSpellchecked = true;
+//        if (numErrors() == 0) {
+//            hasErrors = false;
+//        }
+//    }
 
     // EFFECTS: Helper method: if current word is an actual word return true, if a symbol/punctuation/etc: return false
     public Boolean isWord(String w) {
@@ -177,7 +180,7 @@ public class Document {
     }
 
     // EFFECTS: returns number of errors in document
-    public int numErrors() {
+    public int getNumErrors() {
         return listOfErrors.numErrors();
     }
 
@@ -192,12 +195,40 @@ public class Document {
         return this.listOfErrors.getNextError();
     }
 
+    // EFFECTS: adds given error to list of errors
+    public void addError(SpellingError error) {
+        this.listOfErrors.addError(error);
+    }
+
     // MODIFIES: this
     // EFFECTS: receives and saves the word dictionary from DocumentLibrary to be used for spellcheck
     public void addDictionary(HashSet<String> dict) {
         this.wordDictionary = dict;
     }
 
+    public ListOfSpellingErrors getListOfErrors() {
+        return listOfErrors;
+    }
+
+    public void setListOfErrors(ListOfSpellingErrors l) {
+        this.listOfErrors = l;
+    }
+
+    public boolean getHasErrors() {
+        return hasErrors;
+    }
+
+    public void setHasErrors(boolean e) {
+        this.hasErrors = e;
+    }
+
+    public boolean getIsSpellchecked() {
+        return isSpellchecked;
+    }
+
+    public void setIsSpellchecked(boolean e) {
+        this.isSpellchecked = e;
+    }
 }
 
 

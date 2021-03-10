@@ -59,6 +59,28 @@ public class DocumentLibrary {
         }
     }
 
+    // REQUIRES: this.text.length() > 0
+    // MODIFIES: this
+    // EFFECTS: for every array word not in dictionary, new SpellingError object is added to ListOfSpellingErrors
+    public void runSpellcheck(Document myDoc) {
+        myDoc.setListOfErrors(new ListOfSpellingErrors());
+        int position = 0;
+        for (String w: myDoc.getWordsArray()) {
+            position += w.length();
+            if (myDoc.isWord(w)) {
+                if (!wordDictionary.contains(w.toLowerCase())) {
+                    myDoc.setHasErrors(true);
+                    SpellingError error = new SpellingError(position - w.length(), position, w, "NON");
+                    myDoc.addError(error);
+                }
+            }
+        }
+        myDoc.setIsSpellchecked(true);
+        if (myDoc.getNumErrors() == 0) {
+            myDoc.setHasErrors(false);
+        }
+    }
+
     // EFFECTS: converts self to json object
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

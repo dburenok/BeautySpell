@@ -86,8 +86,8 @@ class DocumentTest {
         testDocument.breakTextIntoWordArray();
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
-        testDocument.runSpellcheck();
-        assertEquals(0, testDocument.numErrors());
+        testDocLib.runSpellcheck(testDocument);
+        assertEquals(0, testDocument.getNumErrors());
     }
 
     @Test
@@ -99,8 +99,8 @@ class DocumentTest {
         testDocument.breakTextIntoWordArray();
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
-        testDocument.runSpellcheck();
-        assertEquals(1, testDocument.numErrors());
+        testDocLib.runSpellcheck(testDocument);
+        assertEquals(1, testDocument.getNumErrors());
     }
 
     @Test
@@ -112,8 +112,8 @@ class DocumentTest {
         testDocument.breakTextIntoWordArray();
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
-        testDocument.runSpellcheck();
-        assertEquals(2, testDocument.numErrors());
+        testDocLib.runSpellcheck(testDocument);
+        assertEquals(2, testDocument.getNumErrors());
     }
 
     @Test
@@ -125,8 +125,8 @@ class DocumentTest {
         testDocument.breakTextIntoWordArray();
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
-        testDocument.runSpellcheck();
-        assertEquals(4, testDocument.numErrors());
+        testDocLib.runSpellcheck(testDocument);
+        assertEquals(4, testDocument.getNumErrors());
     }
 
     @Test
@@ -139,9 +139,9 @@ class DocumentTest {
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         assertFalse(testDocument.showErrors());
-        testDocument.runSpellcheck();
+        testDocLib.runSpellcheck(testDocument);
         assertTrue(testDocument.showErrors());
-        assertEquals(0, testDocument.numErrors());
+        assertEquals(0, testDocument.getNumErrors());
         assertEquals(1, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
     }
@@ -156,16 +156,16 @@ class DocumentTest {
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         assertFalse(testDocument.showErrors());
-        testDocument.runSpellcheck();
+        testDocLib.runSpellcheck(testDocument);
         assertTrue(testDocument.showErrors());
-        assertEquals(1, testDocument.numErrors());
+        assertEquals(1, testDocument.getNumErrors());
         assertEquals(1, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
         assertEquals("oat1", testDocument.getNextError().getTypoText());
     }
 
     @Test
-    void testDocumentLengthZero() throws FileNotFoundException {
+    void testDocumentLengthZero() {
         testDocument = new Document("", "name1");
         assertNull(testDocument.getText());
     }
@@ -180,15 +180,15 @@ class DocumentTest {
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         assertFalse(testDocument.showErrors());
-        testDocument.runSpellcheck();
+        testDocLib.runSpellcheck(testDocument);
         assertTrue(testDocument.showErrors());
-        assertEquals(0, testDocument.numErrors());
+        assertEquals(0, testDocument.getNumErrors());
         assertEquals(6, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
         text = "Now we get new text!";
-        testDocument.replaceText(text);
+        testDocument.replaceText(text, testDocLib);
         assertTrue(testDocument.showErrors());
-        assertEquals(0, testDocument.numErrors());
+        assertEquals(0, testDocument.getNumErrors());
         assertEquals(10, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
     }
@@ -212,7 +212,7 @@ class DocumentTest {
         testDocument.breakTextIntoWordArray();
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
-        testDocument.runSpellcheck();
+        testDocLib.runSpellcheck(testDocument);
         assertTrue(testDocument.hasErrors());
         SpellingError e = testDocument.getNextError();
         assertEquals(2, e.typoPositionStart());
@@ -229,7 +229,7 @@ class DocumentTest {
         testDocument.breakTextIntoWordArray();
         testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
-        testDocument.runSpellcheck();
+        testDocLib.runSpellcheck(testDocument);
         SpellingError e = testDocument.getNextError();
         e.showError(testDocument.getText());
         assertTrue(testDocument.hasErrors());

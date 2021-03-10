@@ -1,8 +1,0 @@
-{
-    "documents": [{
-        "hasErrors": false,
-        "name": "Test",
-        "text": "This is some text that i wrote for u!"
-    }],
-    "name": "DocumentLibrary"
-}

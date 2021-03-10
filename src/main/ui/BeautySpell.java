@@ -14,7 +14,7 @@ import java.util.*;
 // dont need to test this
 public class BeautySpell {
 
-    private static final String JSON_STORE = "./data/doclibrary.json";
+    private static final String JSON_STORE = "./data/MyDocumentLibrary.json";
 
     private boolean running = true;
     private boolean trimmed = false;
@@ -164,11 +164,20 @@ public class BeautySpell {
                     back = true;
                     break;
                 case "p":
-                    println(myDoc.getText());
                     break;
             }
         }
     }
+
+    public  void printDocument() {
+        println();
+        println(">>> START OF DOCUMENT <<<");
+        println();
+        println(myDoc.getName() + "\n" + myDoc.getText());
+        println();
+        println(">>> END OF DOCUMENT <<<");
+    }
+
 
     // REQUIRES: myDoc.text not empty
     // MODIFIES: myDoc
@@ -193,18 +202,19 @@ public class BeautySpell {
         println();
         print("Running spellcheck...");
         myDoc.breakTextIntoWordArray();
-        myDoc.runSpellcheck();
+        myDocLib.runSpellcheck(myDoc);
         println();
-        println(">>> Ran spellcheck! " + myDoc.numErrors() + " error(s) found. <<<");
+        println(">>> Ran spellcheck! " + myDoc.getNumErrors() + " error(s) found. <<<");
     }
 
     // REQUIRES: myDoc.text not empty
     // MODIFIES: myDoc
     // EFFECTS: User selected: s - show errors
     public void choiceShowErrors(Document myDoc) {
-        if (myDoc.numErrors() > 0) {
-            println("Document has " + myDoc.numErrors() + " errors.");
-            while (myDoc.numErrors() > 0) {
+        if (myDoc.getNumErrors() > 0) {
+            println();
+            println("Document has " + myDoc.getNumErrors() + " errors.");
+            while (myDoc.getNumErrors() > 0) {
 
                 SpellingError e = myDoc.getNextError();
                 e.showError(myDoc.getText());
@@ -216,10 +226,10 @@ public class BeautySpell {
                 String oldText = myDoc.getText();
                 String newText = oldText.substring(0, e.typoPositionStart())
                         + correctSpelling + oldText.substring(e.typoPositionEnd());
-                myDoc.replaceText(newText);
+                myDoc.replaceText(newText, myDocLib);
 
                 println("Spelling fixed!");
-                println("Document now has " + myDoc.numErrors() + " errors.");
+                println("Document now has " + myDoc.getNumErrors() + " errors.");
             }
         } else {
             println("Document has no errors!");
@@ -230,7 +240,6 @@ public class BeautySpell {
     public void printOptions() {
         println();
         println("[t] trim whitespace, [r] - run spellcheck, [s] - show errors, [p] - print document, [b] - back");
-        println();
     }
 
     // EFFECTS: helper method that prints given string to console, no newline
