@@ -117,7 +117,7 @@ public class PredictiveSpellchecker {
 ////        setA.add("2");
 ////        setA.add("3");
 ////        setA.add("4");
-////        System.out.println(checker.cartesianProduct(checker.cartesianProduct(setA, setA), checker.cartesianProduct(setA, setA)));
+////        System.out.println(checker.cartesianProduct(setA, checker.cartesianProduct(setA, setA)));
 ////        System.out.println(checker.wordToOptionsList("ronust"));
 ////        System.out.println(checker.generateTypingErrorPaths("ronust"));
 ////        System.out.println(checker.getWordMatchesInDict("ronust", dict));
