@@ -64,9 +64,10 @@ public class PredictiveSpellchecker {
     }
 
     public HashSet<String> stringPowerSet(String str) {
+        final int MIN_LENGTH = 2;
         HashSet<String> result = new HashSet<>();
         String tempString = "";
-        for (int len = 1; len <= str.length(); len++) {
+        for (int len = MIN_LENGTH; len <= str.length(); len++) {
             for (int i = 0; i <= str.length() - len; i++) {
                 int j = i + len - 1;
                 for (int k = i; k <= j; k++) {
@@ -86,15 +87,15 @@ public class PredictiveSpellchecker {
         DocumentLibrary doclib = new DocumentLibrary();
         HashSet<String> dict = doclib.wordDictionary;
 
-        String word = "papre";
+        String entry = "doijwe";
 
-        HashSet<String> opts = checker.checkWordInDict(word, dict);
+        HashSet<String> opts = checker.checkWordInDict(entry, dict);
 
-        System.out.println("Word entered: " + word);
+        System.out.println("Word entered: " + entry);
 
         for (String s : opts) {
             System.out.print(s + ", conf: ");
-            System.out.print(checker.intersectionSizeRatio(checker.stringPowerSet(word), checker.stringPowerSet(s)));
+            System.out.print(checker.intersectionSizeRatio(checker.stringPowerSet(entry), checker.stringPowerSet(s)));
             System.out.print(" ");
             System.out.println(checker.stringPowerSet(s));
         }
@@ -102,8 +103,11 @@ public class PredictiveSpellchecker {
 
     public double intersectionSizeRatio(HashSet<String> a, HashSet<String> b) {
         double firstSetSize = a.size();
-        a.retainAll(b);
-        return Math.round(a.size() / firstSetSize * 1000.0) / 1000.0;
+
+        Set<String> intersection = new HashSet<String>(a);
+        intersection.retainAll(b);
+
+        return intersection.size() / firstSetSize;
     }
 
 

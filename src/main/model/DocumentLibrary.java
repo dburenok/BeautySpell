@@ -77,7 +77,7 @@ public class DocumentLibrary {
                 if (!wordDictionary.contains(w.toLowerCase())) {
                     myDoc.setHasErrors(true);
                     //ArrayList<String> suggestedWords = checker.checkWordInDict(w.toLowerCase(), wordDictionary);
-                    SpellingError error = new SpellingError(position - w.length(), position, w, new ArrayList<String>());
+                    SpellingError error = new SpellingError(position - w.length(), position, w, new ArrayList<>());
                     myDoc.addError(error);
                 }
             }
