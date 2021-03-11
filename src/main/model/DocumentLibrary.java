@@ -48,6 +48,24 @@ public class DocumentLibrary {
         return docs.get(docs.size() - 1);
     }
 
+    public Document getDocumentByName(String name) {
+        for (Document d : docs) {
+            if (d.getName().equals(name)) {
+                return d;
+            }
+        }
+        return null;
+    }
+
+    public boolean documentExists(String name) {
+        for (Document d : docs) {
+            if (d.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // REQUIRES: dictionary.txt file must be present at [project_dir]/data/dictionary.txt
     // MODIFIES: this.wordDictionary
     // EFFECTS: loads dictionary into a HashSet
@@ -75,7 +93,10 @@ public class DocumentLibrary {
             if (myDoc.isWord(w)) {
                 if (!wordDictionary.contains(w.toLowerCase())) {
                     myDoc.setHasErrors(true);
-                    String suggestedWord = checker.getSuggestion(w.toLowerCase(), wordDictionary);
+                    String suggestedWord = "";
+                    if (w.length() < 8) {
+                        suggestedWord = checker.getSuggestion(w.toLowerCase(), wordDictionary);
+                    }
                     SpellingError error = new SpellingError(position - w.length(), position, w, suggestedWord);
                     myDoc.addError(error);
                 }
@@ -87,6 +108,14 @@ public class DocumentLibrary {
         if (myDoc.getNumErrors() == 0) {
             myDoc.setHasErrors(false);
         }
+    }
+
+    public ArrayList<String> listDocumentNames() {
+        ArrayList<String> docNames = new ArrayList<>();
+        for (Document d : docs) {
+            docNames.add(d.getName());
+        }
+        return docNames;
     }
 
     // EFFECTS: converts self to json object

@@ -81,15 +81,16 @@ public class BeautySpell {
         }
         boolean open = false;
         while (!open) {
-            println("You have " + dl.numDocuments() + " in your library. Which one do you want to open?");
+            println("You have " + dl.numDocuments() + " document(s) in your library. Which one do you want to open?");
+            System.out.println(dl.listDocumentNames());
             sc = new Scanner(System.in);
-            int docNum = Integer.parseInt(sc.nextLine());
-            if (docNum > myDocLib.numDocuments()) {
-                System.out.println("Document doesn't exist!");
-            } else {
-                myDoc = dl.getDocument(docNum);
+            String docNameEntered = sc.nextLine();
+            if (dl.documentExists(docNameEntered)) {
+                myDoc = dl.getDocumentByName(docNameEntered);
                 open = true;
                 insideDocumentLoop(back, myDoc);
+            } else {
+                System.out.println("Document doesn't exist!");
             }
         }
     }
@@ -216,26 +217,32 @@ public class BeautySpell {
             println("\nDocument has " + myDoc.getNumErrors() + " errors.");
             while (myDoc.getNumErrors() > 0) {
 
-                SpellingError e = myDoc.getNextError();
-                e.showError(myDoc.getText());
-                System.out.println("Suggested word: " + e.getSuggestedWord());
+                SpellingError error = myDoc.getNextError();
+                error.showError(myDoc.getText());
 
-                print("Please provide the correct spelling (or press enter to use suggestion): ");
+                String suggestedWord = error.getSuggestedWord();
+                if (!suggestedWord.equals("")) {
+                    System.out.println("Suggested word: " + error.getSuggestedWord());
+                    print("\nPlease provide the correct spelling (or press enter to use suggestion): ");
+                } else {
+                    print("\nPlease provide the correct spelling: ");
+                }
+
                 sc = new Scanner(System.in);
                 String correctSpelling;
                 String entry1 = sc.nextLine();
                 if (entry1.equals("")) {
-                    correctSpelling = e.getSuggestedWord();
+                    correctSpelling = error.getSuggestedWord();
                 } else {
                     correctSpelling = entry1;
                 }
 
                 String oldText = myDoc.getText();
-                String newText = oldText.substring(0, e.getTypoPositionStart())
-                        + correctSpelling + oldText.substring(e.getTypoPositionEnd());
+                String newText = oldText.substring(0, error.getTypoPositionStart())
+                        + correctSpelling + oldText.substring(error.getTypoPositionEnd());
                 myDoc.replaceText(newText, myDocLib);
 
-                println("Spelling fixed!\nDocument now has " + myDoc.getNumErrors() + " errors.");
+                println("Spelling fixed!\nDocument now has " + myDoc.getNumErrors() + " errors.\n");
             }
         } else {
             println("Document has no errors!");

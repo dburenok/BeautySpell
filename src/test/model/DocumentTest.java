@@ -15,7 +15,9 @@ class DocumentTest {
     private DocumentLibrary testDocLib;
 
     @BeforeEach
-    void runBefore() {}
+    void setup() throws FileNotFoundException {
+        testDocLib = new DocumentLibrary();
+    }
 
     @Test
     void testConstructor() {
@@ -84,7 +86,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         testDocLib.runSpellcheck(testDocument);
         assertEquals(0, testDocument.getNumErrors());
@@ -97,7 +98,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         testDocLib.runSpellcheck(testDocument);
         assertEquals(1, testDocument.getNumErrors());
@@ -110,7 +110,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         testDocLib.runSpellcheck(testDocument);
         assertEquals(2, testDocument.getNumErrors());
@@ -123,7 +122,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         testDocLib.runSpellcheck(testDocument);
         assertEquals(4, testDocument.getNumErrors());
@@ -136,7 +134,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         assertFalse(testDocument.showErrors());
         testDocLib.runSpellcheck(testDocument);
@@ -153,7 +150,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         assertFalse(testDocument.showErrors());
         testDocLib.runSpellcheck(testDocument);
@@ -181,7 +177,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         assertFalse(testDocument.showErrors());
         testDocLib.runSpellcheck(testDocument);
@@ -201,7 +196,6 @@ class DocumentTest {
     void testDocumentLibrary() throws FileNotFoundException {
         String text = "Some text.";
         testDocument = new Document(text);
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         assertEquals(1, testDocLib.numDocuments());
         assertEquals(testDocument, testDocLib.getLastDocument());
@@ -214,7 +208,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         testDocLib.runSpellcheck(testDocument);
         assertTrue(testDocument.hasErrors());
@@ -231,7 +224,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         testDocLib.runSpellcheck(testDocument);
         SpellingError e = testDocument.getNextError();
@@ -246,7 +238,6 @@ class DocumentTest {
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
-        testDocLib = new DocumentLibrary();
         testDocLib.addDocument(testDocument);
         testDocLib.runSpellcheck(testDocument);
         SpellingError e = testDocument.getNextError();
