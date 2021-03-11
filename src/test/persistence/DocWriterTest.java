@@ -1,5 +1,7 @@
-package model;
+package persistence;
 
+import model.Document;
+import model.DocumentLibrary;
 import org.junit.jupiter.api.Test;
 import persistence.DocReader;
 import persistence.DocWriter;

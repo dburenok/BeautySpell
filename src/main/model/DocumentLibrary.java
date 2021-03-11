@@ -12,12 +12,14 @@ import java.util.Scanner;
 // Library of document objects, also holds the dictionary
 public class DocumentLibrary {
 
-    ArrayList<Document> docs;
-    HashSet<String> wordDictionary;
+    private ArrayList<Document> docs;
+    protected HashSet<String> wordDictionary;
+    private PredictiveSpellchecker checker;
 
     // REQUIRES: dictionary file must be available in the proper location
     public DocumentLibrary() throws FileNotFoundException {
         docs = new ArrayList<>();
+        checker = new PredictiveSpellchecker();
         loadDictionary();
     }
 
@@ -49,7 +51,7 @@ public class DocumentLibrary {
     // REQUIRES: dictionary.txt file must be present at [project_dir]/data/dictionary.txt
     // MODIFIES: this.wordDictionary
     // EFFECTS: loads dictionary into a HashSet
-    public void loadDictionary() throws FileNotFoundException {
+    public HashSet<String> loadDictionary() throws FileNotFoundException {
         wordDictionary = new HashSet<>();
         String dictPath = new File("").getAbsolutePath().concat("/data/dictionary.txt");
         File file = new File(dictPath);
@@ -57,25 +59,32 @@ public class DocumentLibrary {
         while (scan.hasNextLine()) {
             wordDictionary.add(scan.nextLine().toLowerCase());
         }
+        return wordDictionary;
     }
 
     // REQUIRES: this.text.length() > 0
     // MODIFIES: this
     // EFFECTS: for every array word not in dictionary, new SpellingError object is added to ListOfSpellingErrors
     public void runSpellcheck(Document myDoc) {
+
         myDoc.setListOfErrors(new ListOfSpellingErrors());
+
         int position = 0;
+
         for (String w: myDoc.getWordsArray()) {
             position += w.length();
             if (myDoc.isWord(w)) {
                 if (!wordDictionary.contains(w.toLowerCase())) {
                     myDoc.setHasErrors(true);
-                    SpellingError error = new SpellingError(position - w.length(), position, w, "NON");
+                    //ArrayList<String> suggestedWords = checker.checkWordInDict(w.toLowerCase(), wordDictionary);
+                    SpellingError error = new SpellingError(position - w.length(), position, w, new ArrayList<String>());
                     myDoc.addError(error);
                 }
             }
         }
+
         myDoc.setIsSpellchecked(true);
+
         if (myDoc.getNumErrors() == 0) {
             myDoc.setHasErrors(false);
         }

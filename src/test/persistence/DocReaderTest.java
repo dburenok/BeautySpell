@@ -1,5 +1,6 @@
-package model;
+package persistence;
 
+import model.DocumentLibrary;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
