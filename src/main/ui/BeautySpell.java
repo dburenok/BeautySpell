@@ -164,6 +164,7 @@ public class BeautySpell {
                     back = true;
                     break;
                 case "p":
+                    printDocument();
                     break;
             }
         }
@@ -212,24 +213,29 @@ public class BeautySpell {
     // EFFECTS: User selected: s - show errors
     public void choiceShowErrors(Document myDoc) {
         if (myDoc.getNumErrors() > 0) {
-            println();
-            println("Document has " + myDoc.getNumErrors() + " errors.");
+            println("\nDocument has " + myDoc.getNumErrors() + " errors.");
             while (myDoc.getNumErrors() > 0) {
 
                 SpellingError e = myDoc.getNextError();
                 e.showError(myDoc.getText());
+                System.out.println("Suggested word: " + e.getSuggestedWord());
 
-                print("Please provide the correct spelling: ");
+                print("Please provide the correct spelling (or press enter to use suggestion): ");
                 sc = new Scanner(System.in);
-                String correctSpelling = sc.nextLine();
+                String correctSpelling;
+                String entry1 = sc.nextLine();
+                if (entry1.equals("")) {
+                    correctSpelling = e.getSuggestedWord();
+                } else {
+                    correctSpelling = entry1;
+                }
 
                 String oldText = myDoc.getText();
-                String newText = oldText.substring(0, e.typoPositionStart())
-                        + correctSpelling + oldText.substring(e.typoPositionEnd());
+                String newText = oldText.substring(0, e.getTypoPositionStart())
+                        + correctSpelling + oldText.substring(e.getTypoPositionEnd());
                 myDoc.replaceText(newText, myDocLib);
 
-                println("Spelling fixed!");
-                println("Document now has " + myDoc.getNumErrors() + " errors.");
+                println("Spelling fixed!\nDocument now has " + myDoc.getNumErrors() + " errors.");
             }
         } else {
             println("Document has no errors!");

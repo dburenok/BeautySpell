@@ -37,7 +37,7 @@ public class PredictiveSpellcheckerTest {
         String word = "o";
         String[] words = new String[] { "o" };
         HashSet<String> wordsSet = new HashSet<>(Arrays.asList(words));
-        HashSet<String> generatedWordSet = checker.generateOptions(word);
+        HashSet<String> generatedWordSet = checker.generateTypingErrorPaths(word);
         assertEquals(wordsSet, generatedWordSet);
     }
 
@@ -46,15 +46,15 @@ public class PredictiveSpellcheckerTest {
         String word = "of";
         String[] words = new String[] { "og", "of", "ot", "ov", "oc", "or", "od" };
         HashSet<String> wordsSet = new HashSet<>(Arrays.asList(words));
-        HashSet<String> generatedWordSet = checker.generateOptions(word);
+        HashSet<String> generatedWordSet = checker.generateTypingErrorPaths(word);
         assertEquals(wordsSet, generatedWordSet);
     }
 
-    @Test
-    void compareClosenessOfTwoWords() {
-        double result1 = checker.compareCloseness("milk", "melk");
-        double result2 = checker.compareCloseness("milk", "oolk");
-        assertTrue(result1 > result2);
-    }
+//    @Test
+//    void compareClosenessOfTwoWords() {
+//        double result1 = checker.compareCloseness("milk", "melk");
+//        double result2 = checker.compareCloseness("milk", "oolk");
+//        assertTrue(result1 > result2);
+//    }
 
 }

@@ -8,17 +8,17 @@ public class SpellingError {
     private final int typoPositionStart;
     private final int typoPositionEnd;
     private final String typo;
-    private final ArrayList<String> suggestedWords;
+    private final String suggestedWord;
 
     // REQUIRES: all parameters must be given at object creation
     // MODIFIES: this
     // EFFECTS: creats a Spelling Error object with string index of typo start, end, the typo itself and
     // a suggested word
-    public SpellingError(int typoPositionStart, int typoPositionEnd, String typo, ArrayList<String> suggestedWords) {
+    public SpellingError(int typoPositionStart, int typoPositionEnd, String typo, String suggestedWord) {
         this.typoPositionStart = typoPositionStart;
         this.typoPositionEnd = typoPositionEnd;
         this.typo = typo;
-        this.suggestedWords = suggestedWords;
+        this.suggestedWord = suggestedWord;
     }
 
     // EFFECTS: print the spelling error to console, along with the text around it
@@ -34,18 +34,19 @@ public class SpellingError {
         }
     }
 
-    // EFFECTS: returns typo text
     public String getTypoText() {
         return typo;
     }
 
-    // EFFECTS: returns typo position start in text
-    public int typoPositionStart() {
+    public String getSuggestedWord() {
+        return suggestedWord;
+    }
+
+    public int getTypoPositionStart() {
         return typoPositionStart;
     }
 
-    // EFFECTS: returns typo position end in text
-    public int typoPositionEnd() {
+    public int getTypoPositionEnd() {
         return typoPositionEnd;
     }
 

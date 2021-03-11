@@ -51,7 +51,7 @@ public class DocumentLibrary {
     // REQUIRES: dictionary.txt file must be present at [project_dir]/data/dictionary.txt
     // MODIFIES: this.wordDictionary
     // EFFECTS: loads dictionary into a HashSet
-    public HashSet<String> loadDictionary() throws FileNotFoundException {
+    public void loadDictionary() throws FileNotFoundException {
         wordDictionary = new HashSet<>();
         String dictPath = new File("").getAbsolutePath().concat("/data/dictionary.txt");
         File file = new File(dictPath);
@@ -59,7 +59,6 @@ public class DocumentLibrary {
         while (scan.hasNextLine()) {
             wordDictionary.add(scan.nextLine().toLowerCase());
         }
-        return wordDictionary;
     }
 
     // REQUIRES: this.text.length() > 0
@@ -76,8 +75,8 @@ public class DocumentLibrary {
             if (myDoc.isWord(w)) {
                 if (!wordDictionary.contains(w.toLowerCase())) {
                     myDoc.setHasErrors(true);
-                    //ArrayList<String> suggestedWords = checker.checkWordInDict(w.toLowerCase(), wordDictionary);
-                    SpellingError error = new SpellingError(position - w.length(), position, w, new ArrayList<>());
+                    String suggestedWord = checker.getSuggestion(w.toLowerCase(), wordDictionary);
+                    SpellingError error = new SpellingError(position - w.length(), position, w, suggestedWord);
                     myDoc.addError(error);
                 }
             }
@@ -93,7 +92,7 @@ public class DocumentLibrary {
     // EFFECTS: converts self to json object
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("name", "DocumentLibrary");
+        json.put("name", "Document Library");
         json.put("documents", documentsToJson());
         return json;
     }

@@ -13,7 +13,7 @@ public class PredictiveSpellchecker {
         initializeKeyNeighbours();
     }
 
-    public HashSet<String> generateOptions(String word) {
+    public HashSet<String> generateTypingErrorPaths(String word) {
         ArrayList<HashSet<String>> optionsList = wordToOptionsList(word);
 
         while (optionsList.size() > 1) {
@@ -46,9 +46,8 @@ public class PredictiveSpellchecker {
         return optionsList;
     }
 
-    public HashSet<String> checkWordInDict(String word, HashSet<String> wordDictionary) {
-
-        HashSet<String> options = generateOptions(word);
+    public HashSet<String> getWordMatchesInDict(String word, HashSet<String> wordDictionary) {
+        HashSet<String> options = generateTypingErrorPaths(word);
         HashSet<String> realWords = new HashSet<>();
         for (String s : options) {
             if (wordDictionary.contains(s)) {
@@ -59,9 +58,9 @@ public class PredictiveSpellchecker {
     }
 
 
-    public double compareCloseness(String s1, String s2) {
-        return 0;
-    }
+//    public double compareCloseness(String s1, String s2) {
+//        return 0;
+//    }
 
     public HashSet<String> stringPowerSet(String str) {
         final int MIN_LENGTH = 2;
@@ -81,27 +80,51 @@ public class PredictiveSpellchecker {
         return result;
     }
 
+    public String getSuggestion(String entry, HashSet<String> dictionary) {
 
-    public static void main(String[] args) throws FileNotFoundException {
-        PredictiveSpellchecker checker = new PredictiveSpellchecker();
-        DocumentLibrary doclib = new DocumentLibrary();
-        HashSet<String> dict = doclib.wordDictionary;
+        HashSet<String> entryOptions = getWordMatchesInDict(entry, dictionary);
 
-        String entry = "doijwe";
+        double highestScore = 0;
+        String closestMatch = "";
 
-        HashSet<String> opts = checker.checkWordInDict(entry, dict);
-
-        System.out.println("Word entered: " + entry);
-
-        for (String s : opts) {
-            System.out.print(s + ", conf: ");
-            System.out.print(checker.intersectionSizeRatio(checker.stringPowerSet(entry), checker.stringPowerSet(s)));
-            System.out.print(" ");
-            System.out.println(checker.stringPowerSet(s));
+        for (String s : entryOptions) {
+            double currentScore = intersectionPercent(stringPowerSet(entry), stringPowerSet(s));
+            if (currentScore > highestScore) {
+                highestScore = currentScore;
+                closestMatch = s;
+            }
         }
+        return closestMatch;
     }
 
-    public double intersectionSizeRatio(HashSet<String> a, HashSet<String> b) {
+//    public void printSuggestions(String entry, HashSet<String> dictionary) {
+//        System.out.println("Word entered: " + entry);
+//        HashSet<String> entryOptions = getWordMatchesInDict(entry, dictionary);
+//
+//        for (String s : entryOptions) {
+//            System.out.println(s + " confidence: " + intersectionPercent(stringPowerSet(entry), stringPowerSet(s)));
+//        }
+//    }
+
+
+//    public static void main(String[] args) throws FileNotFoundException {
+//
+//        PredictiveSpellchecker checker = new PredictiveSpellchecker();
+//        DocumentLibrary doclib = new DocumentLibrary();
+////        HashSet<String> dict = doclib.wordDictionary;
+////        HashSet<String> setA = new HashSet<>();
+////        setA.add("1");
+////        setA.add("2");
+////        setA.add("3");
+////        setA.add("4");
+////        System.out.println(checker.cartesianProduct(checker.cartesianProduct(setA, setA), checker.cartesianProduct(setA, setA)));
+////        System.out.println(checker.wordToOptionsList("ronust"));
+////        System.out.println(checker.generateTypingErrorPaths("ronust"));
+////        System.out.println(checker.getWordMatchesInDict("ronust", dict));
+////        checker.printSuggestions("ronust", dict);
+//    }
+
+    public double intersectionPercent(HashSet<String> a, HashSet<String> b) {
         double firstSetSize = a.size();
 
         Set<String> intersection = new HashSet<String>(a);

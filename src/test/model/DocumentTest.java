@@ -148,8 +148,8 @@ class DocumentTest {
 
     @Test
     void testOneWordWithError() throws FileNotFoundException {
-        String text = "oat1";
-        testDocument = new Document(text);
+        String text = "jkuykuybew";
+        testDocument = new Document(text, "my doc");
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -158,10 +158,14 @@ class DocumentTest {
         assertFalse(testDocument.showErrors());
         testDocLib.runSpellcheck(testDocument);
         assertTrue(testDocument.showErrors());
+        ListOfSpellingErrors list = testDocument.getListOfErrors();
         assertEquals(1, testDocument.getNumErrors());
+        assertTrue(testDocument.getHasErrors());
         assertEquals(1, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
-        assertEquals("oat1", testDocument.getNextError().getTypoText());
+        assertEquals("jkuykuybew", testDocument.getNextError().getTypoText());
+        assertTrue(testDocument.getIsSpellchecked());
+        assertEquals("my doc", testDocument.getName());
     }
 
     @Test
@@ -215,8 +219,8 @@ class DocumentTest {
         testDocLib.runSpellcheck(testDocument);
         assertTrue(testDocument.hasErrors());
         SpellingError e = testDocument.getNextError();
-        assertEquals(2, e.typoPositionStart());
-        assertEquals(5, e.typoPositionEnd());
+        assertEquals(2, e.getTypoPositionStart());
+        assertEquals(5, e.getTypoPositionEnd());
     }
 
     @Test
@@ -233,6 +237,20 @@ class DocumentTest {
         SpellingError e = testDocument.getNextError();
         e.showError(testDocument.getText());
         assertTrue(testDocument.hasErrors());
+    }
+
+    @Test
+    void testWordSuggestion() throws FileNotFoundException {
+        String text = "sunnt";
+        testDocument = new Document(text);
+        testDocument.fixWhitespace();
+        testDocument.fixPunctuationWhitespace();
+        testDocument.breakTextIntoWordArray();
+        testDocLib = new DocumentLibrary();
+        testDocLib.addDocument(testDocument);
+        testDocLib.runSpellcheck(testDocument);
+        SpellingError e = testDocument.getNextError();
+        assertEquals("sunny", e.getSuggestedWord());
     }
 
 }

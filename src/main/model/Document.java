@@ -42,6 +42,7 @@ public class Document {
         json.put("name", name);
         json.put("text", text);
         json.put("hasErrors", hasErrors);
+//        json.put("suggestedWord", hasErrors);
         return json;
     }
 
@@ -135,7 +136,7 @@ public class Document {
     // EFFECTS: returns the rebuilt string from the wordsArray - mostly for consistency and testing
     public String putWordArrayBackTogether() {
         StringBuilder putBack = new StringBuilder();
-        for (String w: wordsArray) {
+        for (String w : wordsArray) {
             putBack.append(w);
         }
         return putBack.toString();
