@@ -9,15 +9,19 @@ public class Document {
 
     private String text;
     private String name;
+
+    private DocumentLibrary documentLibrary;
+
     private ListOfSpellingErrors listOfErrors;
     private ArrayList<String> wordsArray;
     private Boolean isSpellchecked;
-    HashSet<String> wordDictionary;
     private boolean hasErrors;
 
     // REQUIRES: text must be size > 0
-    public Document(String text) {
+    public Document(String name, String text, DocumentLibrary documentLibrary) {
         if (text.length() > 0) {
+            this.documentLibrary = documentLibrary;
+            this.name = name;
             this.text = text;
             this.wordsArray = new ArrayList<>();
             this.listOfErrors = new ListOfSpellingErrors();
@@ -25,16 +29,16 @@ public class Document {
         }
     }
 
-    // REQUIRES: text must be size > 0
-    public Document(String text, String name) {
-        if (text.length() > 0) {
-            this.text = text;
-            this.name = name;
-            this.wordsArray = new ArrayList<>();
-            this.listOfErrors = new ListOfSpellingErrors();
-            isSpellchecked = false;
-        }
-    }
+//    // REQUIRES: text must be size > 0
+//    public Document(String text, String name) {
+//        if (text.length() > 0) {
+//            this.text = text;
+//            this.name = name;
+//            this.wordsArray = new ArrayList<>();
+//            this.listOfErrors = new ListOfSpellingErrors();
+//            isSpellchecked = false;
+//        }
+//    }
 
     // EFFECTS: converts self to json object
     public JSONObject toJson() {
@@ -62,11 +66,11 @@ public class Document {
     // REQUIRES: s.length() > 0
     // MODIFIES: this
     // EFFECTS: manually replace document text, set isSpellchecked bool to false
-    public void replaceText(String s, DocumentLibrary docLib) {
+    public void replaceText(String s) {
         this.text = s;
         this.isSpellchecked = false;
         breakTextIntoWordArray();
-        docLib.runSpellcheck(this);
+        documentLibrary.checkSpelling(this);
     }
 
     // MODIFIES: this.text
@@ -201,11 +205,11 @@ public class Document {
         this.listOfErrors.addError(error);
     }
 
-    // MODIFIES: this
-    // EFFECTS: receives and saves the word dictionary from DocumentLibrary to be used for spellcheck
-    public void addDictionary(HashSet<String> dict) {
-        this.wordDictionary = dict;
-    }
+//    // MODIFIES: this
+//    // EFFECTS: receives and saves the word dictionary from DocumentLibrary to be used for spellcheck
+//    public void addDictionary(HashSet<String> dict) {
+//        this.wordDictionary = dict;
+//    }
 
     public ListOfSpellingErrors getListOfErrors() {
         return listOfErrors;

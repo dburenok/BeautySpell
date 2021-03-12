@@ -46,8 +46,8 @@ public class DocWriterTest {
     void testWriterGeneralDocumentLibrary() {
         try {
             DocumentLibrary dl = new DocumentLibrary();
-            dl.addDocument(new Document("Here is some text.", "Test Document"));
-            dl.addDocument(new Document("Here is some more cool text.", "Test Document 2"));
+            dl.addDocument(new Document("Test Document", "Here is some text.", dl));
+            dl.addDocument(new Document("Test Document", "Here is some more cool text.", dl));
             DocWriter writer = new DocWriter("./data/testWriterGeneralDocumentLibrary.json");
             writer.open();
             writer.write(dl);

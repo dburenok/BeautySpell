@@ -21,24 +21,27 @@ class DocumentTest {
 
     @Test
     void testConstructor() {
+        String name = "DocName";
         String text = "This is some text.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         assertEquals(text, testDocument.getText());
         assertNotNull(testDocument);
     }
 
     @Test
     void testConstructorEmptyStringGetText() {
+        String name = "DocName";
         String text = "";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         assertNotNull(testDocument);
         assertNull(testDocument.getText());
     }
 
     @Test
     void testCleanWhitespace() {
+        String name = "DocName";
         String text = " This is a nice freakin' car  right  here , boss . Where's that 200 dollar car? 40% off, right? ";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         String correctText = "This is a nice freakin' car right here, boss. Where's that 200 dollar car? 40% off, right?";
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
@@ -48,8 +51,9 @@ class DocumentTest {
 
     @Test
     void testCleanPunctuationWhitespace() {
+        String name = "DocName";
         String text = "Some messy , weird  ,  text right here man . ";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         String correctText = "Some messy, weird, text right here man.";
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
@@ -59,8 +63,9 @@ class DocumentTest {
 
     @Test
     void testBreakTextIntoArray() {
+        String name = "DocName";
         String text = "Here is some text, it needs breaking up.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         ArrayList<String> wordList = new ArrayList<>(
                 Arrays.asList("Here", " ", "is", " ", "some", " ", "text", ",", " ", "it", " ", "needs", " ", "breaking", " ", "up", "."));
         testDocument.fixWhitespace();
@@ -71,8 +76,9 @@ class DocumentTest {
 
     @Test
     void testBreakTextIntoArrayAndPutBackTogether() {
+        String name = "DocName";
         String text = "Here is some text, it needs breaking up and putting back together! Do it.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -80,63 +86,68 @@ class DocumentTest {
     }
 
     @Test
-    void testNoSpellingErrors() throws FileNotFoundException {
+    void testNoSpellingErrors() {
+        String name = "DocName";
         String text = "This sentence has no typos.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
         assertEquals(0, testDocument.getNumErrors());
     }
 
     @Test
-    void testOneSpellingError() throws FileNotFoundException {
+    void testOneSpellingError() {
+        String name = "DocName";
         String text = "This shirt cost me $40 dollarz.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
         assertEquals(1, testDocument.getNumErrors());
     }
 
     @Test
-    void testTwoSpellingErrors() throws FileNotFoundException {
+    void testTwoSpellingErrors() {
+        String name = "DocName";
         String text = "Thiss sentence hazz two typos.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
         assertEquals(2, testDocument.getNumErrors());
     }
 
     @Test
-    void testFourSpellingErrors() throws FileNotFoundException {
+    void testFourSpellingErrors() {
+        String name = "DocName";
         String text = "Thiss sentenc haz four typoss.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
         assertEquals(4, testDocument.getNumErrors());
     }
 
     @Test
-    void testOneWordNoError() throws FileNotFoundException {
+    void testOneWordNoError() {
+        String name = "DocName";
         String text = "oats";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
         assertFalse(testDocument.showErrors());
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
         assertTrue(testDocument.showErrors());
         assertEquals(0, testDocument.getNumErrors());
         assertEquals(1, testDocument.breakTextIntoWordArray().size());
@@ -144,15 +155,16 @@ class DocumentTest {
     }
 
     @Test
-    void testOneWordWithError() throws FileNotFoundException {
+    void testOneWordWithError() {
+        String name = "DocName";
         String text = "jkuykuybew";
-        testDocument = new Document(text, "my doc");
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
         assertFalse(testDocument.showErrors());
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
         assertTrue(testDocument.showErrors());
         ListOfSpellingErrors list = testDocument.getListOfErrors();
         assertEquals(1, testDocument.getNumErrors());
@@ -161,31 +173,34 @@ class DocumentTest {
         assertEquals(text, testDocument.getText());
         assertEquals("jkuykuybew", testDocument.getNextError().getTypoText());
         assertTrue(testDocument.getIsSpellchecked());
-        assertEquals("my doc", testDocument.getName());
+        assertEquals("DocName", testDocument.getName());
     }
 
     @Test
     void testDocumentLengthZero() {
-        testDocument = new Document("", "name1");
+        String name = "DocName";
+        String text = "";
+        testDocument = new Document(name, text, testDocLib);
         assertNull(testDocument.getText());
     }
 
     @Test
-    void testReplaceText() throws FileNotFoundException {
+    void testReplaceText() {
+        String name = "DocName";
         String text = "Some text here.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
         assertFalse(testDocument.showErrors());
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
         assertTrue(testDocument.showErrors());
         assertEquals(0, testDocument.getNumErrors());
         assertEquals(6, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
         text = "Now we get new text!";
-        testDocument.replaceText(text, testDocLib);
+        testDocument.replaceText(text);
         assertTrue(testDocument.showErrors());
         assertEquals(0, testDocument.getNumErrors());
         assertEquals(10, testDocument.breakTextIntoWordArray().size());
@@ -193,23 +208,25 @@ class DocumentTest {
     }
 
     @Test
-    void testDocumentLibrary() throws FileNotFoundException {
+    void testDocumentLibrary() {
+        String name = "DocName";
         String text = "Some text.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocLib.addDocument(testDocument);
         assertEquals(1, testDocLib.numDocuments());
         assertEquals(testDocument, testDocLib.getLastDocument());
     }
 
     @Test
-    void testTypoPositions() throws FileNotFoundException {
+    void testTypoPositions() {
+        String name = "DocName";
         String text = "i haz stuff";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
         assertTrue(testDocument.hasErrors());
         SpellingError e = testDocument.getNextError();
         assertEquals(2, e.getTypoPositionStart());
@@ -217,31 +234,34 @@ class DocumentTest {
     }
 
     @Test
-    void longTextWithTypo() throws FileNotFoundException {
+    void longTextWithTypo() {
+        String name = "DocName";
         String text = "This is going to be a very long text and a typo will appear heeere. Now that we have made the " +
                 "typo, we will continue to write in here.";
-        testDocument = new Document(text);
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
         SpellingError e = testDocument.getNextError();
         e.showError(testDocument.getText());
         assertTrue(testDocument.hasErrors());
     }
 
     @Test
-    void testWordSuggestion() throws FileNotFoundException {
-        String text = "sunnt";
-        testDocument = new Document(text);
+    void testWordSuggestion() {
+        String name = "DocName";
+        String text = "numbre";
+        testDocument = new Document(name, text, testDocLib);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.runSpellcheck(testDocument);
+        testDocLib.checkSpelling(testDocument);
+        assertEquals(1, testDocument.getNumErrors());
         SpellingError e = testDocument.getNextError();
-        assertEquals("sunny", e.getSuggestedWord());
+        assertEquals("number", e.getSuggestedWord());
     }
 
 }

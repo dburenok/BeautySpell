@@ -1,15 +1,16 @@
 package model;
 
-import java.io.FileNotFoundException;
+import javax.xml.ws.handler.HandlerResolver;
 import java.util.*;
 
 public class PredictiveSpellchecker {
 
     private final HashMap<String, HashSet<String>> options;
-    HashSet<String> wordDictionary;
+    TreeSet<String> dictionary;
 
-    PredictiveSpellchecker() {
-        options = new HashMap<>();
+    public PredictiveSpellchecker(TreeSet<String> dict) {
+        this.options = new HashMap<>();
+        this.dictionary = dict;
         initializeKeyNeighbours();
     }
 
@@ -46,24 +47,29 @@ public class PredictiveSpellchecker {
         return optionsList;
     }
 
-    public HashSet<String> getWordMatchesInDict(String word, HashSet<String> wordDictionary) {
+    public HashSet<String> getStrictPathWordMatches(String word) {
         HashSet<String> options = generateTypingErrorPaths(word);
         HashSet<String> realWords = new HashSet<>();
         for (String s : options) {
-            if (wordDictionary.contains(s)) {
+            if (dictionary.contains(s)) {
                 realWords.add(s);
             }
         }
         return realWords;
     }
 
-
-//    public double compareCloseness(String s1, String s2) {
-//        return 0;
-//    }
+    public HashSet<String> getRealWords(HashSet<String> strings) {
+        HashSet<String> realWords = new HashSet<>();
+        for (String s : strings) {
+            if (dictionary.contains(s)) {
+                realWords.add(s);
+            }
+        }
+        return realWords;
+    }
 
     public HashSet<String> stringPowerSet(String str) {
-        final int MIN_LENGTH = 2;
+        final int MIN_LENGTH = str.length() - 2;
         HashSet<String> result = new HashSet<>();
         String tempString = "";
         for (int len = MIN_LENGTH; len <= str.length(); len++) {
@@ -80,9 +86,57 @@ public class PredictiveSpellchecker {
         return result;
     }
 
-    public String getSuggestion(String entry, HashSet<String> dictionary) {
+    public String getFlexibleSuggestion(String entry) {
 
-        HashSet<String> entryOptions = getWordMatchesInDict(entry, dictionary);
+        if (dictionary.contains(entry)) {
+            return entry;
+        } else if (dictionary.contains(entry.substring(0, entry.length() - 1))) {
+            return entry.substring(0, entry.length() - 1);
+        }
+
+        HashSet<String> entrySubstrings = new HashSet<>();
+        entrySubstrings.add(entry.substring(0, entry.length() - 1));
+        entrySubstrings.add(entry.substring(0, entry.length() - 2));
+        entrySubstrings.add(entry.substring(0, entry.length() - 2) + entry.charAt(entry.length() - 1));
+
+        HashSet<String> cartesianProductOneEndLetter;
+        HashSet<String> cartesianProductTwoEndLetters;
+
+        HashSet<String> alphabet = options.get("alphabet");
+
+        cartesianProductOneEndLetter = cartesianProduct(entrySubstrings, alphabet);
+        cartesianProductTwoEndLetters = cartesianProduct(cartesianProduct(entrySubstrings, alphabet), alphabet);
+
+        HashSet<String> allCombinations = new HashSet<>(cartesianProductOneEndLetter);
+        allCombinations.addAll(cartesianProductTwoEndLetters);
+
+        return getBestMatch(entry, (getRealWords(allCombinations)));
+    }
+
+    public String getBestMatch(String entry, HashSet<String> possibleWords) {
+        int highScore = 0;
+        int currentScore;
+        String bestMatch = "";
+        for (String s : possibleWords) {
+            currentScore = compareCloseness(entry, s);
+            if (currentScore > highScore) {
+                highScore = currentScore;
+                bestMatch = s;
+            }
+        }
+        return bestMatch;
+    }
+
+    public int compareCloseness(String s1, String s2) {
+        Set<String> lettersS1 = new HashSet<>(Arrays.asList(s1.split("")));
+        Set<String> lettersS2 = new HashSet<>(Arrays.asList(s2.split("")));
+        lettersS1.retainAll(lettersS2);
+        return lettersS1.size();
+    }
+
+    public String getStrictSuggestion(String entry) {
+
+        HashSet<String> entryOptions = getStrictPathWordMatches(entry);
 
         double highestScore = 0;
         String closestMatch = "";
@@ -97,37 +151,10 @@ public class PredictiveSpellchecker {
         return closestMatch;
     }
 
-//    public void printSuggestions(String entry, HashSet<String> dictionary) {
-//        System.out.println("Word entered: " + entry);
-//        HashSet<String> entryOptions = getWordMatchesInDict(entry, dictionary);
-//
-//        for (String s : entryOptions) {
-//            System.out.println(s + " confidence: " + intersectionPercent(stringPowerSet(entry), stringPowerSet(s)));
-//        }
-//    }
-
-
-//    public static void main(String[] args) throws FileNotFoundException {
-//
-//        PredictiveSpellchecker checker = new PredictiveSpellchecker();
-//        DocumentLibrary doclib = new DocumentLibrary();
-////        HashSet<String> dict = doclib.wordDictionary;
-////        HashSet<String> setA = new HashSet<>();
-////        setA.add("1");
-////        setA.add("2");
-////        setA.add("3");
-////        setA.add("4");
-////        System.out.println(checker.cartesianProduct(setA, checker.cartesianProduct(setA, setA)));
-////        System.out.println(checker.wordToOptionsList("ronust"));
-////        System.out.println(checker.generateTypingErrorPaths("ronust"));
-////        System.out.println(checker.getWordMatchesInDict("ronust", dict));
-////        checker.printSuggestions("ronust", dict);
-//    }
-
     public double intersectionPercent(HashSet<String> a, HashSet<String> b) {
         double firstSetSize = a.size();
 
-        Set<String> intersection = new HashSet<String>(a);
+        Set<String> intersection = new HashSet<>(a);
         intersection.retainAll(b);
 
         return intersection.size() / firstSetSize;
@@ -165,6 +192,8 @@ public class PredictiveSpellchecker {
         options.put("x", new HashSet<>(Arrays.asList("x", "z", "s", "d", "c")));
         options.put("y", new HashSet<>(Arrays.asList("y", "t", "g", "h", "u")));
         options.put("z", new HashSet<>(Arrays.asList("z", "a", "s", "x")));
+        options.put("alphabet", new HashSet<>(Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
+                "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")));
     }
 
 }

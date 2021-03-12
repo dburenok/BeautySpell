@@ -2,6 +2,7 @@ package ui;
 
 import model.Document;
 import model.DocumentLibrary;
+import model.PredictiveSpellchecker;
 import model.SpellingError;
 import persistence.DocReader;
 import persistence.DocWriter;
@@ -19,43 +20,45 @@ public class BeautySpell {
     private boolean running = true;
     private boolean trimmed = false;
     DocumentLibrary myDocLib;
-    private boolean spellchecked = false;
     private DocWriter docWriter;
     private DocReader docReader;
     Scanner sc;
     Document myDoc;
 
-
     public BeautySpell() throws IOException {
-        runBeautySpell();
+        startBeautySpell();
     }
 
     // EFFECTS: begins the program loop
-    public void runBeautySpell() throws FileNotFoundException {
+    public void startBeautySpell() throws FileNotFoundException {
         println("Welcome to BeautySpell!");
         myDocLib = new DocumentLibrary();
         docWriter = new DocWriter(JSON_STORE);
         docReader = new DocReader(JSON_STORE);
-        mainLoop(myDocLib);
+
+        // TESTING WITH PREDICTION
+//        PredictiveSpellchecker checkerTest = new PredictiveSpellchecker(myDocLib.getDictionary());
+//        System.out.println(checkerTest.getFlexibleSuggestion("appel"));
+
+        mainLoop();
     }
 
     // EFFECTS: main program loop, begins after welcome message
-    public void mainLoop(DocumentLibrary myDocLib) {
+    public void mainLoop() {
         while (running) {
-
             println("Your library has " + myDocLib.numDocuments() + " document(s).");
             println("[l] - load library, [s] - save library, [o] - open a document, [a] - add new document, [q] quit");
             sc = new Scanner(System.in);
             String choice = sc.nextLine();
             boolean back = false;
-            switchChoices(choice, myDocLib, back);
+            switchChoices(choice, back);
         }
     }
 
-    public void switchChoices(String choice, DocumentLibrary dl, boolean back) {
+    public void switchChoices(String choice, boolean back) {
         switch (choice) {
             case "s": {
-                saveDocumentLibrary(dl);
+                saveDocumentLibrary();
                 break;
             }
             case "l": {
@@ -63,10 +66,10 @@ public class BeautySpell {
                 break;
             }
             case "a":
-                addNewDocument(dl, back);
+                addNewDocument(back);
                 break;
             case "o":
-                openDocument(dl, back);
+                openDocument(back);
                 break;
             case "q":
                 running = false;
@@ -75,18 +78,18 @@ public class BeautySpell {
     }
 
     //
-    public void openDocument(DocumentLibrary dl, boolean back) {
-        if (dl.numDocuments() == 0) {
+    public void openDocument(boolean back) {
+        if (myDocLib.numDocuments() == 0) {
             return;
         }
         boolean open = false;
         while (!open) {
-            println("You have " + dl.numDocuments() + " document(s) in your library. Which one do you want to open?");
-            System.out.println(dl.listDocumentNames());
+            println("Your library has " + myDocLib.numDocuments() + " document(s). Which one do you want to open?");
+            System.out.println(myDocLib.listDocumentNames());
             sc = new Scanner(System.in);
             String docNameEntered = sc.nextLine();
-            if (dl.documentExists(docNameEntered)) {
-                myDoc = dl.getDocumentByName(docNameEntered);
+            if (myDocLib.documentExists(docNameEntered)) {
+                myDoc = myDocLib.getDocumentByName(docNameEntered);
                 open = true;
                 insideDocumentLoop(back, myDoc);
             } else {
@@ -97,31 +100,31 @@ public class BeautySpell {
 
 
     //
-    public void addNewDocument(DocumentLibrary dl, boolean back) {
+    public void addNewDocument(boolean back) {
         print("Please name your document: ");
         sc = new Scanner(System.in);
-        String docName = sc.nextLine();
+        String name = sc.nextLine();
 
         print("Please enter (or paste) the text of your document: ");
         sc = new Scanner(System.in);
-        String txt = sc.nextLine();
+        String text = sc.nextLine();
 
         println("Saving document...");
 
-        myDoc = new Document(txt, docName);
-        dl.addDocument(myDoc);
+        myDoc = new Document(name, text, myDocLib);
+        myDocLib.addDocument(myDoc);
 
         println("Document saved.");
 
-        Document myDoc = dl.getLastDocument();
+        Document myDoc = myDocLib.getLastDocument();
         insideDocumentLoop(back, myDoc);
     }
 
     // EFFECTS: saves the workroom to file
-    private void saveDocumentLibrary(DocumentLibrary dl) {
+    private void saveDocumentLibrary() {
         try {
             docWriter.open();
-            docWriter.write(dl);
+            docWriter.write(myDocLib);
             docWriter.close();
             System.out.println("Saved document library to " + JSON_STORE);
         } catch (FileNotFoundException e) {
@@ -135,7 +138,7 @@ public class BeautySpell {
         try {
             myDocLib = docReader.read();
             System.out.println("Loaded Document Library from " + JSON_STORE);
-            mainLoop(myDocLib);
+            mainLoop();
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
@@ -204,7 +207,7 @@ public class BeautySpell {
         println();
         print("Running spellcheck...");
         myDoc.breakTextIntoWordArray();
-        myDocLib.runSpellcheck(myDoc);
+        myDocLib.checkSpelling(myDoc);
         println();
         println(">>> Ran spellcheck! " + myDoc.getNumErrors() + " error(s) found. <<<");
     }
@@ -216,37 +219,38 @@ public class BeautySpell {
         if (myDoc.getNumErrors() > 0) {
             println("\nDocument has " + myDoc.getNumErrors() + " errors.");
             while (myDoc.getNumErrors() > 0) {
-
-                SpellingError error = myDoc.getNextError();
-                error.showError(myDoc.getText());
-
-                String suggestedWord = error.getSuggestedWord();
-                if (!suggestedWord.equals("")) {
-                    System.out.println("Suggested word: " + error.getSuggestedWord());
-                    print("\nPlease provide the correct spelling (or press enter to use suggestion): ");
-                } else {
-                    print("\nPlease provide the correct spelling: ");
-                }
-
-                sc = new Scanner(System.in);
-                String correctSpelling;
-                String entry1 = sc.nextLine();
-                if (entry1.equals("")) {
-                    correctSpelling = error.getSuggestedWord();
-                } else {
-                    correctSpelling = entry1;
-                }
-
-                String oldText = myDoc.getText();
-                String newText = oldText.substring(0, error.getTypoPositionStart())
-                        + correctSpelling + oldText.substring(error.getTypoPositionEnd());
-                myDoc.replaceText(newText, myDocLib);
-
-                println("Spelling fixed!\nDocument now has " + myDoc.getNumErrors() + " errors.\n");
+                correctSpelling();
+                println("\nSpelling fixed!\nDocument now has " + myDoc.getNumErrors() + " errors.");
             }
         } else {
             println("Document has no errors!");
         }
+    }
+
+    public void correctSpelling() {
+        SpellingError error = myDoc.getNextError();
+        error.showError(myDoc.getText());
+        String suggestedWord = error.getSuggestedWord();
+        if (!suggestedWord.equals("")) {
+            System.out.println("Suggested word: " + error.getSuggestedWord());
+            print("\nPlease provide the correct spelling (or press enter to use suggestion): ");
+        } else {
+            print("\nPlease provide the correct spelling: ");
+        }
+
+        sc = new Scanner(System.in);
+        String correctSpelling;
+        String entry = sc.nextLine();
+        if (entry.equals("")) {
+            correctSpelling = error.getSuggestedWord();
+        } else {
+            correctSpelling = entry;
+        }
+
+        String oldText = myDoc.getText();
+        String newText = oldText.substring(0, error.getTypoPositionStart())
+                + correctSpelling + oldText.substring(error.getTypoPositionEnd());
+        myDoc.replaceText(newText);
     }
 
     // EFFECTS: prints user selection choices to console

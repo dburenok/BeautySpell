@@ -3,6 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -11,10 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PredictiveSpellcheckerTest {
 
     PredictiveSpellchecker checker;
+    DocumentLibrary testDocLibrary;
 
     @BeforeEach
-    public void setup() {
-        checker = new PredictiveSpellchecker();
+    public void setup() throws FileNotFoundException {
+        testDocLibrary = new DocumentLibrary();
+        checker = new PredictiveSpellchecker(testDocLibrary.getDictionary());
     }
 
     @Test
@@ -35,7 +38,7 @@ public class PredictiveSpellcheckerTest {
     @Test
     void testGenerateOptionsOneLong() {
         String word = "o";
-        String[] words = new String[] { "o" };
+        String[] words = new String[]{"o"};
         HashSet<String> wordsSet = new HashSet<>(Arrays.asList(words));
         HashSet<String> generatedWordSet = checker.generateTypingErrorPaths(word);
         assertEquals(wordsSet, generatedWordSet);
@@ -44,17 +47,16 @@ public class PredictiveSpellcheckerTest {
     @Test
     void testGenerateOptionsTwoLong() {
         String word = "of";
-        String[] words = new String[] { "og", "of", "ot", "ov", "oc", "or", "od" };
+        String[] words = new String[]{"og", "of", "ot", "ov", "oc", "or", "od"};
         HashSet<String> wordsSet = new HashSet<>(Arrays.asList(words));
         HashSet<String> generatedWordSet = checker.generateTypingErrorPaths(word);
         assertEquals(wordsSet, generatedWordSet);
     }
 
-//    @Test
-//    void compareClosenessOfTwoWords() {
-//        double result1 = checker.compareCloseness("milk", "melk");
-//        double result2 = checker.compareCloseness("milk", "oolk");
-//        assertTrue(result1 > result2);
-//    }
+    @Test
+    void compareClosenessOfTwoWords() {
+        assertTrue(checker.compareCloseness("milk", "melk") > checker.compareCloseness("milk", "oolk"));
+        assertTrue(checker.compareCloseness("doggy", "doppy") > checker.compareCloseness("doggy", "bobby"));
+    }
 
 }
