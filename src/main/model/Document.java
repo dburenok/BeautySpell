@@ -18,9 +18,9 @@ public class Document {
     private boolean hasErrors;
 
     // REQUIRES: text must be size > 0
-    public Document(String name, String text, DocumentLibrary documentLibrary) {
+    public Document(String name, String text) {
         if (text.length() > 0) {
-            this.documentLibrary = documentLibrary;
+//            this.documentLibrary = documentLibrary;
             this.name = name;
             this.text = text;
             this.wordsArray = new ArrayList<>();
@@ -39,6 +39,13 @@ public class Document {
 //            isSpellchecked = false;
 //        }
 //    }
+
+    public void setDocumentLibrary(DocumentLibrary doclib) {
+        if (this.documentLibrary != doclib) {
+            this.documentLibrary = doclib;
+            doclib.addDocument(this);
+        }
+    }
 
     // EFFECTS: converts self to json object
     public JSONObject toJson() {
@@ -233,6 +240,10 @@ public class Document {
 
     public void setIsSpellchecked(boolean e) {
         this.isSpellchecked = e;
+    }
+
+    public String toString() {
+        return this.name;
     }
 }
 

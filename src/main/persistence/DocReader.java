@@ -62,7 +62,7 @@ public class DocReader {
     // MODIFIES: wr
     // EFFECTS: parses thingy from JSON object and adds it to workroom
     private void addDocument(DocumentLibrary dl, JSONObject jsonObject) {
-        Document doc = new Document(jsonObject.getString("name"), jsonObject.getString("text"), dl);
+        Document doc = new Document(jsonObject.getString("name"), jsonObject.getString("text"));
         dl.addDocument(doc);
     }
 }

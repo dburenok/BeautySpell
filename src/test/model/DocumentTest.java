@@ -23,7 +23,7 @@ class DocumentTest {
     void testConstructor() {
         String name = "DocName";
         String text = "This is some text.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         assertEquals(text, testDocument.getText());
         assertNotNull(testDocument);
     }
@@ -32,7 +32,7 @@ class DocumentTest {
     void testConstructorEmptyStringGetText() {
         String name = "DocName";
         String text = "";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         assertNotNull(testDocument);
         assertNull(testDocument.getText());
     }
@@ -41,7 +41,7 @@ class DocumentTest {
     void testCleanWhitespace() {
         String name = "DocName";
         String text = " This is a nice freakin' car  right  here , boss . Where's that 200 dollar car? 40% off, right? ";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         String correctText = "This is a nice freakin' car right here, boss. Where's that 200 dollar car? 40% off, right?";
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
@@ -53,7 +53,7 @@ class DocumentTest {
     void testCleanPunctuationWhitespace() {
         String name = "DocName";
         String text = "Some messy , weird  ,  text right here man . ";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         String correctText = "Some messy, weird, text right here man.";
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
@@ -65,7 +65,7 @@ class DocumentTest {
     void testBreakTextIntoArray() {
         String name = "DocName";
         String text = "Here is some text, it needs breaking up.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         ArrayList<String> wordList = new ArrayList<>(
                 Arrays.asList("Here", " ", "is", " ", "some", " ", "text", ",", " ", "it", " ", "needs", " ", "breaking", " ", "up", "."));
         testDocument.fixWhitespace();
@@ -78,7 +78,7 @@ class DocumentTest {
     void testBreakTextIntoArrayAndPutBackTogether() {
         String name = "DocName";
         String text = "Here is some text, it needs breaking up and putting back together! Do it.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -89,7 +89,7 @@ class DocumentTest {
     void testNoSpellingErrors() {
         String name = "DocName";
         String text = "This sentence has no typos.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -102,7 +102,7 @@ class DocumentTest {
     void testOneSpellingError() {
         String name = "DocName";
         String text = "This shirt cost me $40 dollarz.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -115,7 +115,7 @@ class DocumentTest {
     void testTwoSpellingErrors() {
         String name = "DocName";
         String text = "Thiss sentence hazz two typos.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -128,7 +128,7 @@ class DocumentTest {
     void testFourSpellingErrors() {
         String name = "DocName";
         String text = "Thiss sentenc haz four typoss.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -141,7 +141,7 @@ class DocumentTest {
     void testOneWordNoError() {
         String name = "DocName";
         String text = "oats";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -158,7 +158,7 @@ class DocumentTest {
     void testOneWordWithError() {
         String name = "DocName";
         String text = "jkuykuybew";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -180,7 +180,7 @@ class DocumentTest {
     void testDocumentLengthZero() {
         String name = "DocName";
         String text = "";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         assertNull(testDocument.getText());
     }
 
@@ -188,7 +188,7 @@ class DocumentTest {
     void testReplaceText() {
         String name = "DocName";
         String text = "Some text here.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -211,7 +211,7 @@ class DocumentTest {
     void testDocumentLibrary() {
         String name = "DocName";
         String text = "Some text.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocLib.addDocument(testDocument);
         assertEquals(1, testDocLib.numDocuments());
         assertEquals(testDocument, testDocLib.getLastDocument());
@@ -221,7 +221,7 @@ class DocumentTest {
     void testTypoPositions() {
         String name = "DocName";
         String text = "i haz stuff";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -238,7 +238,7 @@ class DocumentTest {
         String name = "DocName";
         String text = "This is going to be a very long text and a typo will appear heeere. Now that we have made the " +
                 "typo, we will continue to write in here.";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
@@ -253,7 +253,7 @@ class DocumentTest {
     void testWordSuggestion() {
         String name = "DocName";
         String text = "numbre";
-        testDocument = new Document(name, text, testDocLib);
+        testDocument = new Document(name, text);
         testDocument.fixWhitespace();
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();

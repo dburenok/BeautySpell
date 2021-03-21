@@ -5,21 +5,18 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.TreeSet;
+import java.util.*;
 
 // Library of document objects, also holds the dictionary
 public class DocumentLibrary {
 
-    private ArrayList<Document> docs;
+    private LinkedList<Document> docs;
     protected TreeSet<String> dictionary;
     private PredictiveSpellchecker checker;
 
     // REQUIRES: dictionary file must be available in the proper location
     public DocumentLibrary() throws FileNotFoundException {
-        docs = new ArrayList<>();
+        docs = new LinkedList<>();
         loadDictionary();
         checker = new PredictiveSpellchecker(dictionary);
     }
@@ -28,7 +25,10 @@ public class DocumentLibrary {
     // MODIFIES: this, d
     // EFFECTS: Adds given document to document array
     public void addDocument(Document d) {
-        docs.add(d);
+        if (!this.docs.contains(d)) {
+            this.docs.add(d);
+            d.setDocumentLibrary(this);
+        }
     }
 
     // EFFECTS: returns number of documents in document library
@@ -42,6 +42,10 @@ public class DocumentLibrary {
 
     public Document getDocument(int index) {
         return docs.get(index);
+    }
+
+    public LinkedList<Document> getDocuments() {
+        return docs;
     }
 
     // REQUIRES: docs not empty
@@ -94,8 +98,8 @@ public class DocumentLibrary {
                 if (!dictionary.contains(word.toLowerCase())) {
                     myDoc.setHasErrors(true);
                     String suggestedWord = "";
-                    if (word.length() < 8) {
-                        suggestedWord = checker.getFlexibleSuggestion(word.toLowerCase());
+                    if (word.length() < 10) {
+                        suggestedWord = checker.getStrictSuggestion(word.toLowerCase());
                     }
                     SpellingError error = new SpellingError(position - word.length(), position, word, suggestedWord);
                     myDoc.addError(error);

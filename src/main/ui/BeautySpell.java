@@ -35,11 +35,6 @@ public class BeautySpell {
         myDocLib = new DocumentLibrary();
         docWriter = new DocWriter(JSON_STORE);
         docReader = new DocReader(JSON_STORE);
-
-        // TESTING WITH PREDICTION
-//        PredictiveSpellchecker checkerTest = new PredictiveSpellchecker(myDocLib.getDictionary());
-//        System.out.println(checkerTest.getFlexibleSuggestion("appel"));
-
         mainLoop();
     }
 
@@ -111,7 +106,7 @@ public class BeautySpell {
 
         println("Saving document...");
 
-        myDoc = new Document(name, text, myDocLib);
+        myDoc = new Document(name, text);
         myDocLib.addDocument(myDoc);
 
         println("Document saved.");
