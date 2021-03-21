@@ -1,14 +1,14 @@
 package model;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 // List of Spelling Error objects, handles adding and showing number of errors
 public class ListOfSpellingErrors {
 
-    private ArrayList<SpellingError> errors;
+    private LinkedList<SpellingError> errors;
 
     public ListOfSpellingErrors() {
-        this.errors = new ArrayList<>();
+        this.errors = new LinkedList<>();
     }
 
     // EFFECTS: returns number of SpellingError objects
@@ -25,6 +25,12 @@ public class ListOfSpellingErrors {
         return e;
     }
 
+    public LinkedList<SpellingError> getErrors() {
+        return errors;
+    }
+
+
+
     // MODIFIES: this
     // EFFECTS: add given spelling error to error list
     public void addError(SpellingError e) {
@@ -37,7 +43,7 @@ public class ListOfSpellingErrors {
         System.out.println();
         System.out.println("This document has " + errors.size() + " errors.");
         for (SpellingError e : errors) {
-            e.showError(text);
+            e.errorPreviewString();
         }
     }
 

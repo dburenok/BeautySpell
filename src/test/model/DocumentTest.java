@@ -94,7 +94,7 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.checkSpelling(testDocument);
+        testDocLib.runSpellcheck(testDocument);
         assertEquals(0, testDocument.getNumErrors());
     }
 
@@ -107,7 +107,7 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.checkSpelling(testDocument);
+        testDocLib.runSpellcheck(testDocument);
         assertEquals(1, testDocument.getNumErrors());
     }
 
@@ -120,7 +120,7 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.checkSpelling(testDocument);
+        testDocLib.runSpellcheck(testDocument);
         assertEquals(2, testDocument.getNumErrors());
     }
 
@@ -133,7 +133,7 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.checkSpelling(testDocument);
+        testDocLib.runSpellcheck(testDocument);
         assertEquals(4, testDocument.getNumErrors());
     }
 
@@ -146,9 +146,9 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        assertFalse(testDocument.showErrors());
-        testDocLib.checkSpelling(testDocument);
-        assertTrue(testDocument.showErrors());
+        assertFalse(testDocument.printErrors());
+        testDocLib.runSpellcheck(testDocument);
+        assertTrue(testDocument.printErrors());
         assertEquals(0, testDocument.getNumErrors());
         assertEquals(1, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
@@ -163,9 +163,9 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        assertFalse(testDocument.showErrors());
-        testDocLib.checkSpelling(testDocument);
-        assertTrue(testDocument.showErrors());
+        assertFalse(testDocument.printErrors());
+        testDocLib.runSpellcheck(testDocument);
+        assertTrue(testDocument.printErrors());
         ListOfSpellingErrors list = testDocument.getListOfErrors();
         assertEquals(1, testDocument.getNumErrors());
         assertTrue(testDocument.getHasErrors());
@@ -193,9 +193,9 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        assertFalse(testDocument.showErrors());
-        testDocLib.checkSpelling(testDocument);
-        assertTrue(testDocument.showErrors());
+        assertFalse(testDocument.printErrors());
+        testDocLib.runSpellcheck(testDocument);
+        assertTrue(testDocument.printErrors());
         assertEquals(0, testDocument.getNumErrors());
         assertEquals(6, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());
@@ -225,7 +225,7 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.checkSpelling(testDocument);
+        testDocLib.runSpellcheck(testDocument);
         assertTrue(testDocument.hasErrors());
         SpellingError e = testDocument.getNextError();
         assertEquals(2, e.getTypoPositionStart());
@@ -242,9 +242,10 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.checkSpelling(testDocument);
+        testDocLib.runSpellcheck(testDocument);
+        testDocument.getListOfErrors().getErrors();
         SpellingError e = testDocument.getNextError();
-        e.showError(testDocument.getText());
+        e.errorPreviewString();
         assertTrue(testDocument.hasErrors());
     }
 
@@ -257,10 +258,28 @@ class DocumentTest {
         testDocument.fixPunctuationWhitespace();
         testDocument.breakTextIntoWordArray();
         testDocLib.addDocument(testDocument);
-        testDocLib.checkSpelling(testDocument);
+        testDocLib.runSpellcheck(testDocument);
         assertEquals(1, testDocument.getNumErrors());
         SpellingError e = testDocument.getNextError();
         assertEquals("number", e.getSuggestedWord());
+    }
+
+    @Test
+    void testDeleteDocument() {
+        String name = "DocName";
+        String text = "numbre";
+        testDocument = new Document(name, text);
+        assertEquals(0, testDocLib.numDocuments());
+        assertEquals(name, testDocument.toString());
+        testDocLib.addDocument(testDocument);
+        testDocLib.setDocumentText(0, "Overwriting!");
+        assertEquals(1, testDocLib.numDocuments());
+        assertTrue(testDocLib.documentExists("DocName"));
+        assertFalse(testDocLib.documentExists("qwexd3sad"));
+        testDocLib.getDocuments();
+        testDocLib.deleteDocument(0);
+        testDocLib.deleteDocument(12); // does nothing
+        assertEquals(0, testDocLib.numDocuments());
     }
 
 }

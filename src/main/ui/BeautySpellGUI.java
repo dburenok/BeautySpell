@@ -2,10 +2,10 @@ package ui;
 
 import model.Document;
 import model.DocumentLibrary;
+import model.SpellingError;
 import persistence.DocReader;
 import persistence.DocWriter;
 
-import javax.print.Doc;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
@@ -232,63 +232,155 @@ public class BeautySpellGUI implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loadLibraryButton) {
-            int returnValue = openFileChooser.showOpenDialog(frame);
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                String path = openFileChooser.getSelectedFile().getAbsolutePath();
-                docReader = new DocReader(path);
-                loadDocumentLibrary();
-            }
+            loadLibraryButtonClicked();
         } else if (e.getSource() == saveLibraryButton) {
-            String path = new File("").getAbsolutePath().concat("/data/MyDocumentLibrary.json");
-            saveDocumentLibrary(path);
-            showMessage("Saved", "Saved library to " + path);
+            saveLibraryButtonClicked();
         } else if (e.getSource() == newDocumentButton) {
-            String name = (String) JOptionPane.showInputDialog(frame,
-                    "Document name:", "New Document", JOptionPane.PLAIN_MESSAGE);
-            if (name.length() > 0) {
-                documentLibrary.addDocument(new Document(name, documentTextArea.getText()));
-                updateDocumentList();
-            }
+            newDocumentButtonClicked();
         } else if (e.getSource() == openDocumentButton) {
-            int index = documentList.getSelectedIndex();
-            if (index >= 0) {
-                documentTextArea.setText(documentLibrary.getDocument(index).getText());
-            } else {
-                showMessage("Error", "No document selected!");
-            }
+            openDocumentButtonClicked();
         } else if (e.getSource() == saveDocumentButton) {
-            int index = documentList.getSelectedIndex();
-            if (index >= 0) {
-                documentLibrary.setDocumentText(index, documentTextArea.getText());
-                showMessage("Saved", documentLibrary.getDocument(index).getName() + " saved!");
-            } else {
-                showMessage("Error", "No document selected!");
-            }
+            saveDocumentButtonClicked();
         } else if (e.getSource() == deleteDocumentButton) {
-            int index = documentList.getSelectedIndex();
-            if (index >= 0) {
-                String name = documentLibrary.getDocument(index).getName();
-                documentLibrary.deleteDocument(index);
-                updateDocumentList();
-                showMessage("Deleted", name + " deleted!");
-            } else {
-                showMessage("Error", "No document selected!");
-            }
+            deleteDocumentButtonClicked();
         } else if (e.getSource() == trimWhitespaceButton) {
-            int index = documentList.getSelectedIndex();
-            if (index >= 0) {
-                Document d = documentLibrary.getDocument(index);
-                String name = d.getName();
-                d.fixWhitespace();
-                d.fixPunctuationWhitespace();
-                showMessage("Done", "Whitespace trimmed!");
-                documentTextArea.setText(d.getText());
-            } else {
-                showMessage("Error", "No document selected!");
-            }
+            trimWhitespaceButtonClicked();
+        } else if (e.getSource() == runSpellcheckButton) {
+            runSpellcheckButtonClicked();
+        } else if (e.getSource() == showErrorsButton) {
+            showErrorsButtonClicked();
         } else if (e.getSource() == quitButton) {
             System.exit(0);
         }
+    }
+
+    public void loadLibraryButtonClicked() {
+        int returnValue = openFileChooser.showOpenDialog(frame);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String path = openFileChooser.getSelectedFile().getAbsolutePath();
+            docReader = new DocReader(path);
+            loadDocumentLibrary();
+        }
+    }
+
+    public void saveLibraryButtonClicked() {
+        String path = new File("").getAbsolutePath().concat("/data/MyDocumentLibrary.json");
+        saveDocumentLibrary(path);
+        showMessage("Saved", "Saved library to " + path);
+    }
+
+    public void newDocumentButtonClicked() {
+        String name = (String) JOptionPane.showInputDialog(frame,
+                "Document name:", "New Document", JOptionPane.PLAIN_MESSAGE);
+        if (name.length() > 0) {
+            documentLibrary.addDocument(new Document(name, documentTextArea.getText()));
+            updateDocumentList();
+        }
+    }
+
+    public void openDocumentButtonClicked() {
+        int index = documentList.getSelectedIndex();
+        if (index >= 0) {
+            documentTextArea.setText(documentLibrary.getDocument(index).getText());
+        } else {
+            showMessage("Error", "No document selected!");
+        }
+    }
+
+    public void saveDocumentButtonClicked() {
+        int index = documentList.getSelectedIndex();
+        if (index >= 0) {
+            documentLibrary.setDocumentText(index, documentTextArea.getText());
+            showMessage("Saved", documentLibrary.getDocument(index).getName() + " saved!");
+        } else {
+            showMessage("Error", "No document selected!");
+        }
+    }
+
+    public void deleteDocumentButtonClicked() {
+        int index = documentList.getSelectedIndex();
+        if (index >= 0) {
+            String name = documentLibrary.getDocument(index).getName();
+            documentLibrary.deleteDocument(index);
+            updateDocumentList();
+            showMessage("Deleted", name + " deleted!");
+        } else {
+            showMessage("Error", "No document selected!");
+        }
+    }
+
+    public void trimWhitespaceButtonClicked() {
+        int index = documentList.getSelectedIndex();
+        if (index >= 0) {
+            Document d = documentLibrary.getDocument(index);
+            String name = d.getName();
+            d.fixWhitespace();
+            d.fixPunctuationWhitespace();
+            showMessage("Done", "Whitespace trimmed!");
+            documentTextArea.setText(d.getText());
+        } else {
+            showMessage("Error", "No document selected!");
+        }
+    }
+
+    public void runSpellcheckButtonClicked() {
+        int index = documentList.getSelectedIndex();
+        if (index >= 0) {
+            Document d = documentLibrary.getDocument(index);
+            documentLibrary.runSpellcheck(d);
+            showMessage("Done", "Ran spellcheck!");
+        } else {
+            showMessage("Error", "No document selected!");
+        }
+    }
+
+    public void showErrorsButtonClicked() {
+        int index = documentList.getSelectedIndex();
+        if (index >= 0) {
+            Document d = documentLibrary.getDocument(index);
+            while (d.getNumErrors() > 0) {
+                errorCorrectionLoop(d);
+            }
+            showMessage("No errors", "No errors!");
+        } else {
+            showMessage("Error", "No document selected!");
+        }
+    }
+
+    // EFFECTS: provides a pop-up for each spelling error and asks user for input
+    public void errorCorrectionLoop(Document d) {
+        SpellingError error = d.getNextError();
+        String entry;
+        String correctSpelling;
+        String errorString = error.errorPreviewString();
+        if (!error.getSuggestedWord().equals("")) {
+            entry = (String) JOptionPane.showInputDialog(frame,
+                    errorString + "\n" + "Suggested word: " + error.getSuggestedWord()
+                            + ". Please provide the correct spelling.",
+                    "Spelling Error", JOptionPane.QUESTION_MESSAGE);
+        } else {
+            entry = (String) JOptionPane.showInputDialog(frame,
+                    errorString + "\n" + "Please provide the correct spelling.",
+                    "Spelling Error", JOptionPane.QUESTION_MESSAGE);
+        }
+
+        finalizeCorrectSpelling(d, error, entry);
+        documentTextArea.setText(d.getText());
+    }
+
+    // EFFECTS: if entry is blank, set correct spelling to the suggested word, otherwise set it to the entry
+    static void finalizeCorrectSpelling(Document d, SpellingError error, String entry) {
+        String correctSpelling;
+        if (entry.equals("")) {
+            correctSpelling = error.getSuggestedWord();
+        } else {
+            correctSpelling = entry;
+        }
+
+        String oldText = d.getText();
+        String newText = oldText.substring(0, error.getTypoPositionStart())
+                + correctSpelling + oldText.substring(error.getTypoPositionEnd());
+        d.replaceText(newText);
     }
 }
 

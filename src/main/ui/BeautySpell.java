@@ -2,7 +2,6 @@ package ui;
 
 import model.Document;
 import model.DocumentLibrary;
-import model.PredictiveSpellchecker;
 import model.SpellingError;
 import persistence.DocReader;
 import persistence.DocWriter;
@@ -80,11 +79,11 @@ public class BeautySpell {
         boolean open = false;
         while (!open) {
             println("Your library has " + myDocLib.numDocuments() + " document(s). Which one do you want to open?");
-            System.out.println(myDocLib.listDocumentNames());
+//            System.out.println(myDocLib.listDocumentNames());
             sc = new Scanner(System.in);
             String docNameEntered = sc.nextLine();
             if (myDocLib.documentExists(docNameEntered)) {
-                myDoc = myDocLib.getDocumentByName(docNameEntered);
+//                myDoc = myDocLib.getDocumentByName(docNameEntered);
                 open = true;
                 insideDocumentLoop(back, myDoc);
             } else {
@@ -202,7 +201,7 @@ public class BeautySpell {
         println();
         print("Running spellcheck...");
         myDoc.breakTextIntoWordArray();
-        myDocLib.checkSpelling(myDoc);
+        myDocLib.runSpellcheck(myDoc);
         println();
         println(">>> Ran spellcheck! " + myDoc.getNumErrors() + " error(s) found. <<<");
     }
@@ -224,7 +223,7 @@ public class BeautySpell {
 
     public void correctSpelling() {
         SpellingError error = myDoc.getNextError();
-        error.showError(myDoc.getText());
+        error.errorPreviewString();
         String suggestedWord = error.getSuggestedWord();
         if (!suggestedWord.equals("")) {
             System.out.println("Suggested word: " + error.getSuggestedWord());
@@ -236,16 +235,7 @@ public class BeautySpell {
         sc = new Scanner(System.in);
         String correctSpelling;
         String entry = sc.nextLine();
-        if (entry.equals("")) {
-            correctSpelling = error.getSuggestedWord();
-        } else {
-            correctSpelling = entry;
-        }
-
-        String oldText = myDoc.getText();
-        String newText = oldText.substring(0, error.getTypoPositionStart())
-                + correctSpelling + oldText.substring(error.getTypoPositionEnd());
-        myDoc.replaceText(newText);
+        BeautySpellGUI.finalizeCorrectSpelling(myDoc, error, entry);
     }
 
     // EFFECTS: prints user selection choices to console

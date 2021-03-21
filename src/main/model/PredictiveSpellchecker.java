@@ -6,9 +6,9 @@ import java.util.*;
 public class PredictiveSpellchecker {
 
     private final HashMap<String, HashSet<String>> options;
-    TreeSet<String> dictionary;
+    HashSet<String> dictionary;
 
-    public PredictiveSpellchecker(TreeSet<String> dict) {
+    public PredictiveSpellchecker(HashSet<String> dict) {
         this.options = new HashMap<>();
         this.dictionary = dict;
         initializeKeyNeighbours();
@@ -58,15 +58,15 @@ public class PredictiveSpellchecker {
         return realWords;
     }
 
-    public HashSet<String> getRealWords(HashSet<String> strings) {
-        HashSet<String> realWords = new HashSet<>();
-        for (String s : strings) {
-            if (dictionary.contains(s)) {
-                realWords.add(s);
-            }
-        }
-        return realWords;
-    }
+//    public HashSet<String> getRealWords(HashSet<String> strings) {
+//        HashSet<String> realWords = new HashSet<>();
+//        for (String s : strings) {
+//            if (dictionary.contains(s)) {
+//                realWords.add(s);
+//            }
+//        }
+//        return realWords;
+//    }
 
     public HashSet<String> stringPowerSet(String str) {
         final int MIN_LENGTH = str.length() - 2;
@@ -86,46 +86,46 @@ public class PredictiveSpellchecker {
         return result;
     }
 
-    public String getFlexibleSuggestion(String entry) {
+//    public String getFlexibleSuggestion(String entry) {
+//
+//        if (dictionary.contains(entry)) {
+//            return entry;
+//        } else if (dictionary.contains(entry.substring(0, entry.length() - 1))) {
+//            return entry.substring(0, entry.length() - 1);
+//        }
+//
+//        HashSet<String> entrySubstrings = new HashSet<>();
+//        entrySubstrings.add(entry.substring(0, entry.length() - 1));
+//        entrySubstrings.add(entry.substring(0, entry.length() - 2));
+//        entrySubstrings.add(entry.substring(0, entry.length() - 2) + entry.charAt(entry.length() - 1));
+//
+//        HashSet<String> cartesianProductOneEndLetter;
+//        HashSet<String> cartesianProductTwoEndLetters;
+//
+//        HashSet<String> alphabet = options.get("alphabet");
+//
+//        cartesianProductOneEndLetter = cartesianProduct(entrySubstrings, alphabet);
+//        cartesianProductTwoEndLetters = cartesianProduct(cartesianProduct(entrySubstrings, alphabet), alphabet);
+//
+//        HashSet<String> allCombinations = new HashSet<>(cartesianProductOneEndLetter);
+//        allCombinations.addAll(cartesianProductTwoEndLetters);
+//
+//        return getBestMatch(entry, (getRealWords(allCombinations)));
+//    }
 
-        if (dictionary.contains(entry)) {
-            return entry;
-        } else if (dictionary.contains(entry.substring(0, entry.length() - 1))) {
-            return entry.substring(0, entry.length() - 1);
-        }
-
-        HashSet<String> entrySubstrings = new HashSet<>();
-        entrySubstrings.add(entry.substring(0, entry.length() - 1));
-        entrySubstrings.add(entry.substring(0, entry.length() - 2));
-        entrySubstrings.add(entry.substring(0, entry.length() - 2) + entry.charAt(entry.length() - 1));
-
-        HashSet<String> cartesianProductOneEndLetter;
-        HashSet<String> cartesianProductTwoEndLetters;
-
-        HashSet<String> alphabet = options.get("alphabet");
-
-        cartesianProductOneEndLetter = cartesianProduct(entrySubstrings, alphabet);
-        cartesianProductTwoEndLetters = cartesianProduct(cartesianProduct(entrySubstrings, alphabet), alphabet);
-
-        HashSet<String> allCombinations = new HashSet<>(cartesianProductOneEndLetter);
-        allCombinations.addAll(cartesianProductTwoEndLetters);
-
-        return getBestMatch(entry, (getRealWords(allCombinations)));
-    }
-
-    public String getBestMatch(String entry, HashSet<String> possibleWords) {
-        int highScore = 0;
-        int currentScore;
-        String bestMatch = "";
-        for (String s : possibleWords) {
-            currentScore = compareCloseness(entry, s);
-            if (currentScore > highScore) {
-                highScore = currentScore;
-                bestMatch = s;
-            }
-        }
-        return bestMatch;
-    }
+//    public String getBestMatch(String entry, HashSet<String> possibleWords) {
+//        int highScore = 0;
+//        int currentScore;
+//        String bestMatch = "";
+//        for (String s : possibleWords) {
+//            currentScore = compareCloseness(entry, s);
+//            if (currentScore > highScore) {
+//                highScore = currentScore;
+//                bestMatch = s;
+//            }
+//        }
+//        return bestMatch;
+//    }
 
     public int compareCloseness(String s1, String s2) {
         Set<String> lettersS1 = new HashSet<>(Arrays.asList(s1.split("")));

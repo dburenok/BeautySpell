@@ -169,7 +169,7 @@ public class Document {
     }
 
     // EFFECTS: displays current errors in document
-    public Boolean showErrors() {
+    public Boolean printErrors() {
         if (!isSpellchecked) {
             System.out.println("No errors to show! Please run spellcheck first.");
             return false;

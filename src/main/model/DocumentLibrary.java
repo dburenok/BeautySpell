@@ -11,7 +11,7 @@ import java.util.*;
 public class DocumentLibrary {
 
     private LinkedList<Document> docs;
-    protected TreeSet<String> dictionary;
+    protected HashSet<String> dictionary;
     private PredictiveSpellchecker checker;
     private String name;
 
@@ -37,7 +37,7 @@ public class DocumentLibrary {
         return docs.size();
     }
 
-    public TreeSet<String> getDictionary() {
+    public HashSet<String> getDictionary() {
         return dictionary;
     }
 
@@ -54,15 +54,15 @@ public class DocumentLibrary {
         return docs.get(docs.size() - 1);
     }
 
-    // EFFECTS: return the first document that matches given name
-    public Document getDocumentByName(String name) {
-        for (Document d : docs) {
-            if (d.getName().equals(name)) {
-                return d;
-            }
-        }
-        return null;
-    }
+//    // EFFECTS: return the first document that matches given name
+//    public Document getDocumentByName(String name) {
+//        for (Document d : docs) {
+//            if (d.getName().equals(name)) {
+//                return d;
+//            }
+//        }
+//        return null;
+//    }
 
     // EFFECTS: return true if document with given name exists
     public boolean documentExists(String name) {
@@ -80,6 +80,7 @@ public class DocumentLibrary {
         docs.get(index).replaceText(text);
     }
 
+    // EFFECTS: delete a document at given index
     public void deleteDocument(int index) {
         if (index <= docs.size() - 1) {
             docs.remove(index);
@@ -90,7 +91,7 @@ public class DocumentLibrary {
     // MODIFIES: this.wordDictionary
     // EFFECTS: loads dictionary into a HashSet
     public void loadDictionary() throws FileNotFoundException {
-        dictionary = new TreeSet<>();
+        dictionary = new HashSet<>();
         String dictPath = new File("").getAbsolutePath().concat("/data/dictionary.txt");
         File file = new File(dictPath);
         Scanner scan = new Scanner(file);
@@ -102,8 +103,8 @@ public class DocumentLibrary {
     // REQUIRES: this.text.length() > 0
     // MODIFIES: this
     // EFFECTS: for every array word not in dictionary, new SpellingError object is added to ListOfSpellingErrors
-    public void checkSpelling(Document myDoc) {
-        myDoc.setListOfErrors(new ListOfSpellingErrors());
+    public void runSpellcheck(Document myDoc) {
+        getDocReady(myDoc);
 
         int position = 0;
 
@@ -116,7 +117,10 @@ public class DocumentLibrary {
                     if (word.length() < 10) {
                         suggestedWord = checker.getStrictSuggestion(word.toLowerCase());
                     }
-                    SpellingError error = new SpellingError(position - word.length(), position, word, suggestedWord);
+                    SpellingError error = new SpellingError(position - word.length(), position,
+                            word,
+                            suggestedWord,
+                            myDoc.getText());
                     myDoc.addError(error);
                 }
             }
@@ -129,12 +133,12 @@ public class DocumentLibrary {
         }
     }
 
-    public ArrayList<String> listDocumentNames() {
-        ArrayList<String> docNames = new ArrayList<>();
-        for (Document d : docs) {
-            docNames.add(d.getName());
-        }
-        return docNames;
+    // EFFECTS: gets document ready for spell checking
+    public void getDocReady(Document myDoc) {
+        myDoc.fixWhitespace();
+        myDoc.fixPunctuationWhitespace();
+        myDoc.breakTextIntoWordArray();
+        myDoc.setListOfErrors(new ListOfSpellingErrors());
     }
 
     // EFFECTS: converts self to json object
