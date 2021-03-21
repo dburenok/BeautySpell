@@ -51,7 +51,7 @@ public class BeautySpellGUI implements ActionListener {
     private DocWriter docWriter;
     private DocReader docReader;
 
-    public BeautySpellGUI() throws FileNotFoundException {
+    public BeautySpellGUI() {
         initFrame();
         initComponents();
         addComponentsToFrame();
@@ -271,7 +271,7 @@ public class BeautySpellGUI implements ActionListener {
     }
 
     public void newDocumentButtonClicked() {
-        String name = (String) JOptionPane.showInputDialog(frame,
+        String name = JOptionPane.showInputDialog(frame,
                 "Document name:", "New Document", JOptionPane.PLAIN_MESSAGE);
         if (name.length() > 0) {
             documentLibrary.addDocument(new Document(name, documentTextArea.getText()));
@@ -307,8 +307,8 @@ public class BeautySpellGUI implements ActionListener {
             String name = documentLibrary.getDocument(index).getName();
             documentLibrary.deleteDocument(index);
             updateDocumentList();
-            showMessage("Deleted", name + " deleted!");
             playSuccessSound();
+            showMessage("Deleted", name + " deleted!");
         } else {
             playFailSound();
             showMessage("Error", "No document selected!");
@@ -366,12 +366,12 @@ public class BeautySpellGUI implements ActionListener {
         String correctSpelling;
         String errorString = error.errorPreviewString();
         if (!error.getSuggestedWord().equals("")) {
-            entry = (String) JOptionPane.showInputDialog(frame,
+            entry = JOptionPane.showInputDialog(frame,
                     errorString + "\n" + "Suggested word: " + error.getSuggestedWord()
                             + ". Please provide the correct spelling, or press Enter to use the suggestion.",
                     "Spelling Error", JOptionPane.QUESTION_MESSAGE);
         } else {
-            entry = (String) JOptionPane.showInputDialog(frame,
+            entry = JOptionPane.showInputDialog(frame,
                     errorString + "\n" + "Please provide the correct spelling.",
                     "Spelling Error", JOptionPane.QUESTION_MESSAGE);
         }
@@ -399,7 +399,7 @@ public class BeautySpellGUI implements ActionListener {
         InputStream chime;
         try {
             String filepath = new File("").getAbsolutePath().concat("/data/success.wav");
-            chime = new FileInputStream(new File(filepath));
+            chime = new FileInputStream(filepath);
             AudioStream audios = new AudioStream(chime);
             AudioPlayer.player.start(audios);
         } catch (Exception e) {
@@ -411,7 +411,7 @@ public class BeautySpellGUI implements ActionListener {
         InputStream chime;
         try {
             String filepath = new File("").getAbsolutePath().concat("/data/error.wav");
-            chime = new FileInputStream(new File(filepath));
+            chime = new FileInputStream(filepath);
             AudioStream audios = new AudioStream(chime);
             AudioPlayer.player.start(audios);
         } catch (Exception e) {
