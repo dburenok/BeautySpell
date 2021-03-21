@@ -235,7 +235,7 @@ public class BeautySpell {
         sc = new Scanner(System.in);
         String correctSpelling;
         String entry = sc.nextLine();
-        BeautySpellGUI.finalizeCorrectSpelling(myDoc, error, entry);
+//        BeautySpellGUI.finalizeCorrectSpelling(myDoc, error, entry);
     }
 
     // EFFECTS: prints user selection choices to console

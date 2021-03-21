@@ -30,6 +30,7 @@ public class DocReaderTest {
         try {
             DocumentLibrary dl = reader.read();
             assertEquals(0, dl.numDocuments());
+            System.out.println(reader.getSource());
         } catch (IOException e) {
             fail("Couldn't read from file");
         }

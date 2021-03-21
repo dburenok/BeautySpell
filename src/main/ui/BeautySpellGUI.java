@@ -5,6 +5,8 @@ import model.DocumentLibrary;
 import model.SpellingError;
 import persistence.DocReader;
 import persistence.DocWriter;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -13,9 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
 
 public class BeautySpellGUI implements ActionListener {
@@ -266,6 +266,7 @@ public class BeautySpellGUI implements ActionListener {
     public void saveLibraryButtonClicked() {
         String path = new File("").getAbsolutePath().concat("/data/MyDocumentLibrary.json");
         saveDocumentLibrary(path);
+        playSuccessSound();
         showMessage("Saved", "Saved library to " + path);
     }
 
@@ -283,6 +284,7 @@ public class BeautySpellGUI implements ActionListener {
         if (index >= 0) {
             documentTextArea.setText(documentLibrary.getDocument(index).getText());
         } else {
+            playFailSound();
             showMessage("Error", "No document selected!");
         }
     }
@@ -291,8 +293,10 @@ public class BeautySpellGUI implements ActionListener {
         int index = documentList.getSelectedIndex();
         if (index >= 0) {
             documentLibrary.setDocumentText(index, documentTextArea.getText());
+            playSuccessSound();
             showMessage("Saved", documentLibrary.getDocument(index).getName() + " saved!");
         } else {
+            playFailSound();
             showMessage("Error", "No document selected!");
         }
     }
@@ -304,7 +308,9 @@ public class BeautySpellGUI implements ActionListener {
             documentLibrary.deleteDocument(index);
             updateDocumentList();
             showMessage("Deleted", name + " deleted!");
+            playSuccessSound();
         } else {
+            playFailSound();
             showMessage("Error", "No document selected!");
         }
     }
@@ -316,9 +322,11 @@ public class BeautySpellGUI implements ActionListener {
             String name = d.getName();
             d.fixWhitespace();
             d.fixPunctuationWhitespace();
+            playSuccessSound();
             showMessage("Done", "Whitespace trimmed!");
             documentTextArea.setText(d.getText());
         } else {
+            playFailSound();
             showMessage("Error", "No document selected!");
         }
     }
@@ -328,8 +336,10 @@ public class BeautySpellGUI implements ActionListener {
         if (index >= 0) {
             Document d = documentLibrary.getDocument(index);
             documentLibrary.runSpellcheck(d);
+            playSuccessSound();
             showMessage("Done", "Ran spellcheck!");
         } else {
+            playFailSound();
             showMessage("Error", "No document selected!");
         }
     }
@@ -341,8 +351,10 @@ public class BeautySpellGUI implements ActionListener {
             while (d.getNumErrors() > 0) {
                 errorCorrectionLoop(d);
             }
+            playSuccessSound();
             showMessage("No errors", "No errors!");
         } else {
+            playFailSound();
             showMessage("Error", "No document selected!");
         }
     }
@@ -356,7 +368,7 @@ public class BeautySpellGUI implements ActionListener {
         if (!error.getSuggestedWord().equals("")) {
             entry = (String) JOptionPane.showInputDialog(frame,
                     errorString + "\n" + "Suggested word: " + error.getSuggestedWord()
-                            + ". Please provide the correct spelling.",
+                            + ". Please provide the correct spelling, or press Enter to use the suggestion.",
                     "Spelling Error", JOptionPane.QUESTION_MESSAGE);
         } else {
             entry = (String) JOptionPane.showInputDialog(frame,
@@ -369,7 +381,7 @@ public class BeautySpellGUI implements ActionListener {
     }
 
     // EFFECTS: if entry is blank, set correct spelling to the suggested word, otherwise set it to the entry
-    static void finalizeCorrectSpelling(Document d, SpellingError error, String entry) {
+    public void finalizeCorrectSpelling(Document d, SpellingError error, String entry) {
         String correctSpelling;
         if (entry.equals("")) {
             correctSpelling = error.getSuggestedWord();
@@ -381,6 +393,30 @@ public class BeautySpellGUI implements ActionListener {
         String newText = oldText.substring(0, error.getTypoPositionStart())
                 + correctSpelling + oldText.substring(error.getTypoPositionEnd());
         d.replaceText(newText);
+    }
+
+    public void playSuccessSound() {
+        InputStream chime;
+        try {
+            String filepath = new File("").getAbsolutePath().concat("/data/success.wav");
+            chime = new FileInputStream(new File(filepath));
+            AudioStream audios = new AudioStream(chime);
+            AudioPlayer.player.start(audios);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, "Error");
+        }
+    }
+
+    public void playFailSound() {
+        InputStream chime;
+        try {
+            String filepath = new File("").getAbsolutePath().concat("/data/error.wav");
+            chime = new FileInputStream(new File(filepath));
+            AudioStream audios = new AudioStream(chime);
+            AudioPlayer.player.start(audios);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, "Error");
+        }
     }
 }
 
