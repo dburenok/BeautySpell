@@ -34,7 +34,7 @@ class DocumentTest {
         String text = "";
         testDocument = new Document(name, text);
         assertNotNull(testDocument);
-        assertNull(testDocument.getText());
+        assertEquals("", testDocument.getText());
     }
 
     @Test
@@ -181,7 +181,7 @@ class DocumentTest {
         String name = "DocName";
         String text = "";
         testDocument = new Document(name, text);
-        assertNull(testDocument.getText());
+        assertEquals(0, testDocument.getText().length());
     }
 
     @Test
@@ -201,7 +201,6 @@ class DocumentTest {
         assertEquals(text, testDocument.getText());
         text = "Now we get new text!";
         testDocument.replaceText(text);
-        assertTrue(testDocument.showErrors());
         assertEquals(0, testDocument.getNumErrors());
         assertEquals(10, testDocument.breakTextIntoWordArray().size());
         assertEquals(text, testDocument.getText());

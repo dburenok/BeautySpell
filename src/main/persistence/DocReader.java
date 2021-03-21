@@ -31,6 +31,10 @@ public class DocReader {
         return parseDocumentLibrary(jsonObject);
     }
 
+    public String getSource() {
+        return this.source;
+    }
+
     // EFFECTS: reads source file as string and returns it
     private String readFile(String source) throws IOException {
         StringBuilder contentBuilder = new StringBuilder();

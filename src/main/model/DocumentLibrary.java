@@ -13,6 +13,7 @@ public class DocumentLibrary {
     private LinkedList<Document> docs;
     protected TreeSet<String> dictionary;
     private PredictiveSpellchecker checker;
+    private String name;
 
     // REQUIRES: dictionary file must be available in the proper location
     public DocumentLibrary() throws FileNotFoundException {
@@ -53,6 +54,7 @@ public class DocumentLibrary {
         return docs.get(docs.size() - 1);
     }
 
+    // EFFECTS: return the first document that matches given name
     public Document getDocumentByName(String name) {
         for (Document d : docs) {
             if (d.getName().equals(name)) {
@@ -62,6 +64,7 @@ public class DocumentLibrary {
         return null;
     }
 
+    // EFFECTS: return true if document with given name exists
     public boolean documentExists(String name) {
         for (Document d : docs) {
             if (d.getName().equals(name)) {
@@ -69,6 +72,18 @@ public class DocumentLibrary {
             }
         }
         return false;
+    }
+
+    // REQUIRES: index >= 0
+    // EFFECTS: manually set a document's text
+    public void setDocumentText(int index, String text) {
+        docs.get(index).replaceText(text);
+    }
+
+    public void deleteDocument(int index) {
+        if (index <= docs.size() - 1) {
+            docs.remove(index);
+        }
     }
 
     // REQUIRES: dictionary.txt file must be present at [project_dir]/data/dictionary.txt

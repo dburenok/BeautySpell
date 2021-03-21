@@ -5,11 +5,14 @@ import model.DocumentLibrary;
 import persistence.DocReader;
 import persistence.DocWriter;
 
+import javax.print.Doc;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,9 +26,10 @@ public class BeautySpellGUI implements ActionListener {
     private JLabel logoLabel;
     private JButton loadLibraryButton;
     private JButton saveLibraryButton;
+    private JButton newDocumentButton;
     private JButton openDocumentButton;
     private JButton saveDocumentButton;
-    private JButton newDocumentButton;
+    private JButton deleteDocumentButton;
     private JButton trimWhitespaceButton;
     private JButton runSpellcheckButton;
     private JButton showErrorsButton;
@@ -33,47 +37,55 @@ public class BeautySpellGUI implements ActionListener {
 
     private DocumentLibrary documentLibrary;
     private JScrollPane documentListScrollPane;
+    private JTextArea documentTextArea;
     private JScrollPane textEditorScrollPane;
 
     private DefaultListModel<Document> model;
+    private JList<Document> documentList;
 
     private static final int WINDOW_HEIGHT = 600;
     private static final int WINDOW_WIDTH = 800;
     private static final int LEFT_SIDEBAR_WIDTH = 155;
 
-    private static final String JSON_STORE = "./data/MyDocumentLibrary.json";
+    //    private static final String JSON_STORE = "./data/MyDocumentLibrary.json";
     private DocWriter docWriter;
     private DocReader docReader;
 
     public BeautySpellGUI() throws FileNotFoundException {
         initFrame();
-//        initTestDocumentLibrary();
         initComponents();
         addComponentsToFrame();
         initFileChooser();
+        initDocumentLibrary();
         showGUI();
     }
 
-    // EFFECTS: initialize GUI
+    // EFFECTS: initialize frame
     public void initFrame() {
         frame = new JFrame();
         frame.setLayout(new BorderLayout());
     }
 
-    public void initTestDocumentLibrary() throws FileNotFoundException {
-        documentLibrary = new DocumentLibrary();
-//        docWriter = new DocWriter(JSON_STORE);
-//        docReader = new DocReader(JSON_STORE);
-        loadDocumentLibrary();
-    }
-
-    // EFFECTS: loads workroom from file
+    // EFFECTS: loads document library from file
     private void loadDocumentLibrary() {
         try {
             documentLibrary = docReader.read();
             updateDocumentList();
         } catch (IOException e) {
-            System.out.println("Unable to read from file: " + JSON_STORE);
+            System.out.println("Unable to read from file: " + docReader.getSource());
+        }
+    }
+
+    // EFFECTS: saves the workroom to file
+    private void saveDocumentLibrary(String path) {
+        try {
+            docWriter = new DocWriter(path);
+            docWriter.open();
+            docWriter.write(documentLibrary);
+            docWriter.close();
+            System.out.println("Saved document library to " + path);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + path);
         }
     }
 
@@ -87,13 +99,19 @@ public class BeautySpellGUI implements ActionListener {
     public void initSidebar() {
         initButtons();
         model = new DefaultListModel<>();
-        JList<Document> documentList = new JList<>();
+        documentList = new JList<>();
         documentList.setModel(model);
-
-//        LinkedList<Document> docList = documentLibrary.getDocuments();
-//        for (Document d : docList) {
-//            model.addElement(d);
-//        }
+        documentList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+        documentList.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) {
+                    int index = documentList.getSelectedIndex();
+                    if (index >= 0) {
+                        documentTextArea.setText(documentLibrary.getDocument(index).getText());
+                    }
+                }
+            }
+        });
 
         documentListScrollPane = new JScrollPane(documentList);
         documentListScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -102,9 +120,12 @@ public class BeautySpellGUI implements ActionListener {
     }
 
     public void updateDocumentList() {
+        model.removeAllElements();
         LinkedList<Document> docList = documentLibrary.getDocuments();
-        for (Document d : docList) {
-            model.addElement(d);
+        if (docList.size() > 0) {
+            for (Document d : docList) {
+                model.addElement(d);
+            }
         }
     }
 
@@ -116,12 +137,28 @@ public class BeautySpellGUI implements ActionListener {
         loadLibraryButton.addActionListener(this);
 
         saveLibraryButton = new JButton("Save Library");
+        saveLibraryButton.addActionListener(this);
+
         newDocumentButton = new JButton("New Document");
+        newDocumentButton.addActionListener(this);
+
         openDocumentButton = new JButton("Open Document");
+        openDocumentButton.addActionListener(this);
+
         saveDocumentButton = new JButton("Save Document");
+        saveDocumentButton.addActionListener(this);
+
+        deleteDocumentButton = new JButton("Delete Document");
+        deleteDocumentButton.addActionListener(this);
+
         trimWhitespaceButton = new JButton("Trim Whitespace");
+        trimWhitespaceButton.addActionListener(this);
+
         runSpellcheckButton = new JButton("Run Spellcheck");
+        runSpellcheckButton.addActionListener(this);
+
         showErrorsButton = new JButton("Show Errors");
+        showErrorsButton.addActionListener(this);
 
         quitButton = new JButton("Quit");
         quitButton.addActionListener(this);
@@ -129,8 +166,7 @@ public class BeautySpellGUI implements ActionListener {
 
     // EFFECTS: initialize text editor component
     public void initTextEditor() {
-//        JTextArea documentTextArea = new JTextArea(documentLibrary.getDocument(0).getText());
-        JTextArea documentTextArea = new JTextArea("");
+        documentTextArea = new JTextArea("");
         documentTextArea.setLineWrap(true);
         documentTextArea.setWrapStyleWord(true);
         documentTextArea.setEditable(true);
@@ -156,7 +192,7 @@ public class BeautySpellGUI implements ActionListener {
         buttonPanel.add(newDocumentButton);
         buttonPanel.add(openDocumentButton);
         buttonPanel.add(saveDocumentButton);
-        buttonPanel.add(new JLabel("  ")); // spacer
+        buttonPanel.add(deleteDocumentButton);
         buttonPanel.add(trimWhitespaceButton);
         buttonPanel.add(runSpellcheckButton);
         buttonPanel.add(showErrorsButton);
@@ -171,6 +207,14 @@ public class BeautySpellGUI implements ActionListener {
 
     }
 
+    public void initDocumentLibrary() {
+        try {
+            this.documentLibrary = new DocumentLibrary();
+        } catch (FileNotFoundException e) {
+            System.out.println("Couldn't initialize document library!");
+        }
+    }
+
     // EFFECTS: finalize GUI setup and show GUI
     public void showGUI() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -180,14 +224,11 @@ public class BeautySpellGUI implements ActionListener {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        try {
-            new BeautySpellGUI();
-        } catch (FileNotFoundException e) {
-            System.out.println("Dictionary file not found!");
-        }
+    public void showMessage(String title, String text) {
+        JOptionPane.showMessageDialog(frame, text, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
+    // EFFECTS: handle button clicks and perform appropriate actions
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loadLibraryButton) {
@@ -196,13 +237,54 @@ public class BeautySpellGUI implements ActionListener {
                 String path = openFileChooser.getSelectedFile().getAbsolutePath();
                 docReader = new DocReader(path);
                 loadDocumentLibrary();
-//                try {
-//
-//                } catch (IOException ioe) {
-////                    System.out.println("whoops!");
-//                }
+            }
+        } else if (e.getSource() == saveLibraryButton) {
+            String path = new File("").getAbsolutePath().concat("/data/MyDocumentLibrary.json");
+            saveDocumentLibrary(path);
+            showMessage("Saved", "Saved library to " + path);
+        } else if (e.getSource() == newDocumentButton) {
+            String name = (String) JOptionPane.showInputDialog(frame,
+                    "Document name:", "New Document", JOptionPane.PLAIN_MESSAGE);
+            if (name.length() > 0) {
+                documentLibrary.addDocument(new Document(name, documentTextArea.getText()));
+                updateDocumentList();
+            }
+        } else if (e.getSource() == openDocumentButton) {
+            int index = documentList.getSelectedIndex();
+            if (index >= 0) {
+                documentTextArea.setText(documentLibrary.getDocument(index).getText());
             } else {
-                return;
+                showMessage("Error", "No document selected!");
+            }
+        } else if (e.getSource() == saveDocumentButton) {
+            int index = documentList.getSelectedIndex();
+            if (index >= 0) {
+                documentLibrary.setDocumentText(index, documentTextArea.getText());
+                showMessage("Saved", documentLibrary.getDocument(index).getName() + " saved!");
+            } else {
+                showMessage("Error", "No document selected!");
+            }
+        } else if (e.getSource() == deleteDocumentButton) {
+            int index = documentList.getSelectedIndex();
+            if (index >= 0) {
+                String name = documentLibrary.getDocument(index).getName();
+                documentLibrary.deleteDocument(index);
+                updateDocumentList();
+                showMessage("Deleted", name + " deleted!");
+            } else {
+                showMessage("Error", "No document selected!");
+            }
+        } else if (e.getSource() == trimWhitespaceButton) {
+            int index = documentList.getSelectedIndex();
+            if (index >= 0) {
+                Document d = documentLibrary.getDocument(index);
+                String name = d.getName();
+                d.fixWhitespace();
+                d.fixPunctuationWhitespace();
+                showMessage("Done", "Whitespace trimmed!");
+                documentTextArea.setText(d.getText());
+            } else {
+                showMessage("Error", "No document selected!");
             }
         } else if (e.getSource() == quitButton) {
             System.exit(0);

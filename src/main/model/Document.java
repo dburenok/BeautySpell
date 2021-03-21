@@ -19,8 +19,7 @@ public class Document {
 
     // REQUIRES: text must be size > 0
     public Document(String name, String text) {
-        if (text.length() > 0) {
-//            this.documentLibrary = documentLibrary;
+        if (text.length() >= 0) {
             this.name = name;
             this.text = text;
             this.wordsArray = new ArrayList<>();
@@ -28,17 +27,6 @@ public class Document {
             isSpellchecked = false;
         }
     }
-
-//    // REQUIRES: text must be size > 0
-//    public Document(String text, String name) {
-//        if (text.length() > 0) {
-//            this.text = text;
-//            this.name = name;
-//            this.wordsArray = new ArrayList<>();
-//            this.listOfErrors = new ListOfSpellingErrors();
-//            isSpellchecked = false;
-//        }
-//    }
 
     public void setDocumentLibrary(DocumentLibrary doclib) {
         if (this.documentLibrary != doclib) {
@@ -76,8 +64,8 @@ public class Document {
     public void replaceText(String s) {
         this.text = s;
         this.isSpellchecked = false;
-        breakTextIntoWordArray();
-        documentLibrary.checkSpelling(this);
+//        breakTextIntoWordArray();
+//        documentLibrary.checkSpelling(this);
     }
 
     // MODIFIES: this.text
