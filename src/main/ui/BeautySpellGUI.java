@@ -18,6 +18,8 @@ import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.LinkedList;
 
+import javax.swing.ImageIcon;
+
 public class BeautySpellGUI implements ActionListener {
 
     private JFrame frame;
@@ -50,6 +52,8 @@ public class BeautySpellGUI implements ActionListener {
     //    private static final String JSON_STORE = "./data/MyDocumentLibrary.json";
     private DocWriter docWriter;
     private DocReader docReader;
+
+    private final ImageIcon logo = new ImageIcon("./data/beautyspell_logo.png");
 
     public BeautySpellGUI() {
         initFrame();
@@ -131,7 +135,7 @@ public class BeautySpellGUI implements ActionListener {
 
     // EFFECTS: initialize buttons
     public void initButtons() {
-        logoLabel = new JLabel("BeautySpell");
+        logoLabel = new JLabel(logo);
 
         loadLibraryButton = new JButton("Load Library");
         loadLibraryButton.addActionListener(this);
@@ -171,7 +175,7 @@ public class BeautySpellGUI implements ActionListener {
         documentTextArea.setWrapStyleWord(true);
         documentTextArea.setEditable(true);
         textEditorScrollPane = new JScrollPane(documentTextArea);
-        textEditorScrollPane.setPreferredSize(new Dimension(WINDOW_WIDTH - LEFT_SIDEBAR_WIDTH, WINDOW_HEIGHT));
+        textEditorScrollPane.setPreferredSize(new Dimension(WINDOW_WIDTH - LEFT_SIDEBAR_WIDTH, WINDOW_HEIGHT - 35));
         textEditorScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     }
 
