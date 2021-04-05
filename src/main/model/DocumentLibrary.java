@@ -54,16 +54,6 @@ public class DocumentLibrary {
         return docs.get(docs.size() - 1);
     }
 
-//    // EFFECTS: return the first document that matches given name
-//    public Document getDocumentByName(String name) {
-//        for (Document d : docs) {
-//            if (d.getName().equals(name)) {
-//                return d;
-//            }
-//        }
-//        return null;
-//    }
-
     // EFFECTS: return true if document with given name exists
     public boolean documentExists(String name) {
         for (Document d : docs) {

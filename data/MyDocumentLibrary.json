@@ -13,7 +13,17 @@
         {
             "hasErrors": false,
             "name": "My Own Book",
-            "text": "Some text I wrote."
+            "text": "Some text I wrote. Here is some more text that I added."
+        },
+        {
+            "hasErrors": false,
+            "name": "TestSpelling",
+            "text": "Some text I wrote. Here is some more text that I added."
+        },
+        {
+            "hasErrors": true,
+            "name": "Test2",
+            "text": "this is some bad spelling"
         }
     ],
     "name": "Document Library"

@@ -120,7 +120,7 @@ public class BeautySpellGUI implements ActionListener {
         documentListScrollPane = new JScrollPane(documentList);
         documentListScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         documentListScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        documentListScrollPane.setPreferredSize(new Dimension(LEFT_SIDEBAR_WIDTH, 200));
+        documentListScrollPane.setPreferredSize(new Dimension(LEFT_SIDEBAR_WIDTH, 180));
     }
 
     public void updateDocumentList() {

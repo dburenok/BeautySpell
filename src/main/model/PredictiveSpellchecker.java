@@ -14,6 +14,7 @@ public class PredictiveSpellchecker {
         initializeKeyNeighbours();
     }
 
+    // EFFECTS: produces set of typing paths for given word
     public HashSet<String> generateTypingErrorPaths(String word) {
         ArrayList<HashSet<String>> optionsList = wordToOptionsList(word);
 
@@ -28,6 +29,7 @@ public class PredictiveSpellchecker {
 
     }
 
+    // EFFECTS: produces the cartesian product of the given sets
     public HashSet<String> cartesianProduct(HashSet<String> a, HashSet<String> b) {
         HashSet<String> words = new HashSet<>();
         for (String i : a) {
@@ -38,6 +40,7 @@ public class PredictiveSpellchecker {
         return words;
     }
 
+    // EFFECTS: converts word to list of neighbour keys
     public ArrayList<HashSet<String>> wordToOptionsList(String word) {
         ArrayList<HashSet<String>> optionsList = new ArrayList<>();
         optionsList.add(new HashSet<>(Collections.singletonList(String.valueOf(word.charAt(0)))));
@@ -47,6 +50,8 @@ public class PredictiveSpellchecker {
         return optionsList;
     }
 
+    // REQUIRES: word.length() > 0
+    // EFFECTS: produce list of words which are real words, if any
     public HashSet<String> getStrictPathWordMatches(String word) {
         HashSet<String> options = generateTypingErrorPaths(word);
         HashSet<String> realWords = new HashSet<>();
@@ -58,16 +63,8 @@ public class PredictiveSpellchecker {
         return realWords;
     }
 
-//    public HashSet<String> getRealWords(HashSet<String> strings) {
-//        HashSet<String> realWords = new HashSet<>();
-//        for (String s : strings) {
-//            if (dictionary.contains(s)) {
-//                realWords.add(s);
-//            }
-//        }
-//        return realWords;
-//    }
-
+    // REQUIRES: word.length() > 0
+    // EFFECTS: produce string power set of given string
     public HashSet<String> stringPowerSet(String str) {
         final int MIN_LENGTH = str.length() - 2;
         HashSet<String> result = new HashSet<>();
@@ -86,47 +83,7 @@ public class PredictiveSpellchecker {
         return result;
     }
 
-//    public String getFlexibleSuggestion(String entry) {
-//
-//        if (dictionary.contains(entry)) {
-//            return entry;
-//        } else if (dictionary.contains(entry.substring(0, entry.length() - 1))) {
-//            return entry.substring(0, entry.length() - 1);
-//        }
-//
-//        HashSet<String> entrySubstrings = new HashSet<>();
-//        entrySubstrings.add(entry.substring(0, entry.length() - 1));
-//        entrySubstrings.add(entry.substring(0, entry.length() - 2));
-//        entrySubstrings.add(entry.substring(0, entry.length() - 2) + entry.charAt(entry.length() - 1));
-//
-//        HashSet<String> cartesianProductOneEndLetter;
-//        HashSet<String> cartesianProductTwoEndLetters;
-//
-//        HashSet<String> alphabet = options.get("alphabet");
-//
-//        cartesianProductOneEndLetter = cartesianProduct(entrySubstrings, alphabet);
-//        cartesianProductTwoEndLetters = cartesianProduct(cartesianProduct(entrySubstrings, alphabet), alphabet);
-//
-//        HashSet<String> allCombinations = new HashSet<>(cartesianProductOneEndLetter);
-//        allCombinations.addAll(cartesianProductTwoEndLetters);
-//
-//        return getBestMatch(entry, (getRealWords(allCombinations)));
-//    }
-
-//    public String getBestMatch(String entry, HashSet<String> possibleWords) {
-//        int highScore = 0;
-//        int currentScore;
-//        String bestMatch = "";
-//        for (String s : possibleWords) {
-//            currentScore = compareCloseness(entry, s);
-//            if (currentScore > highScore) {
-//                highScore = currentScore;
-//                bestMatch = s;
-//            }
-//        }
-//        return bestMatch;
-//    }
-
+    // EFFECTS: produce match score of how similar the two strings are
     public int compareCloseness(String s1, String s2) {
         Set<String> lettersS1 = new HashSet<>(Arrays.asList(s1.split("")));
         Set<String> lettersS2 = new HashSet<>(Arrays.asList(s2.split("")));
@@ -134,8 +91,8 @@ public class PredictiveSpellchecker {
         return lettersS1.size();
     }
 
+    // EFFECTS: produce a single strict suggestion for word
     public String getStrictSuggestion(String entry) {
-
         HashSet<String> entryOptions = getStrictPathWordMatches(entry);
 
         double highestScore = 0;
@@ -151,6 +108,7 @@ public class PredictiveSpellchecker {
         return closestMatch;
     }
 
+    // EFFECTS: produce percentage of intersection of a and b compared to set a
     public double intersectionPercent(HashSet<String> a, HashSet<String> b) {
         double firstSetSize = a.size();
 
@@ -160,7 +118,7 @@ public class PredictiveSpellchecker {
         return intersection.size() / firstSetSize;
     }
 
-
+    // EFFECTS: initialize neighbour key
     private void initializeKeyNeighbours() {
         options.put("a", new HashSet<>(Arrays.asList("a", "q", "w", "s", "x", "z")));
         options.put("b", new HashSet<>(Arrays.asList("b", "v", "g", "h", "n")));
@@ -177,6 +135,7 @@ public class PredictiveSpellchecker {
         initializeKeyNeighboursB();
     }
 
+    // EFFECTS: initialize neighbour key
     private void initializeKeyNeighboursB() {
         options.put("m", new HashSet<>(Arrays.asList("m", "n", "j", "k")));
         options.put("n", new HashSet<>(Arrays.asList("n", "b", "h", "j", "m")));
