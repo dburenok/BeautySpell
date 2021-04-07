@@ -19,13 +19,11 @@ public class Document {
 
     // REQUIRES: text must be size > 0
     public Document(String name, String text) {
-        if (text.length() >= 0) {
-            this.name = name;
-            this.text = text;
-            this.wordsArray = new ArrayList<>();
-            this.listOfErrors = new ListOfSpellingErrors();
-            isSpellchecked = false;
-        }
+        this.name = name;
+        this.text = text;
+        this.wordsArray = new ArrayList<>();
+        this.listOfErrors = new ListOfSpellingErrors();
+        isSpellchecked = false;
     }
 
     public void setDocumentLibrary(DocumentLibrary doclib) {

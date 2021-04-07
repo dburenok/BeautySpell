@@ -1,5 +1,6 @@
 package ui;
 
+import exceptions.DictException;
 import model.Document;
 import model.DocumentLibrary;
 import model.SpellingError;
@@ -75,7 +76,7 @@ public class BeautySpellGUI implements ActionListener {
         try {
             documentLibrary = docReader.read();
             updateDocumentList();
-        } catch (IOException e) {
+        } catch (IOException | DictException e) {
             System.out.println("Unable to read from file: " + docReader.getSource());
         }
     }
@@ -214,7 +215,7 @@ public class BeautySpellGUI implements ActionListener {
     public void initDocumentLibrary() {
         try {
             this.documentLibrary = new DocumentLibrary();
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | DictException e) {
             System.out.println("Couldn't initialize document library!");
         }
     }

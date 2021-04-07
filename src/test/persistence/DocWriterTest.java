@@ -1,10 +1,9 @@
 package persistence;
 
+import exceptions.DictException;
 import model.Document;
 import model.DocumentLibrary;
 import org.junit.jupiter.api.Test;
-import persistence.DocReader;
-import persistence.DocWriter;
 
 import java.io.IOException;
 
@@ -22,6 +21,8 @@ public class DocWriterTest {
             fail("IOException was expected");
         } catch (IOException e) {
             // pass
+        } catch (DictException e) {
+            fail("NoDictionaryException was not expected");
         }
     }
 
@@ -37,7 +38,7 @@ public class DocWriterTest {
             DocReader reader = new DocReader("./data/testWriterEmptyDocumentLibrary.json");
             dl = reader.read();
             assertEquals(0, dl.numDocuments());
-        } catch (IOException e) {
+        } catch (IOException | DictException e) {
             fail("Exception should not have been thrown");
         }
     }
@@ -59,7 +60,7 @@ public class DocWriterTest {
             assertEquals("Here is some text.", dl.getDocument(0).getText());
             assertEquals("Here is some more cool text.", dl.getDocument(1).getText());
 
-        } catch (IOException e) {
+        } catch (IOException | DictException e) {
             fail("Exception should not have been thrown");
         }
     }

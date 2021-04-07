@@ -11,7 +11,7 @@ BeautySpell will:
 
 This project will be useful for drafting an essay as you won't have to click on each word individually (like in Word or Pages). The incorrect words will be served in a controlled way, letting you work systematically through your text, rather than haphazardly looking for the red lines in your text. The automatic word suggestions can be easily overwritten during the spellcheck process.
 
-I'm interested in this project because I want to learn how to implement a word suggestion algorithm. I also think this is a simple, robust way to get spellcheck and text beautyfication functionality without any hassle.
+I'm interested in this project because I want to learn how to implement a word suggestion algorithm. I also think this is a simple, robust way to get spellcheck and text beautification functionality without any hassle.
 
 ## User Stories
 
@@ -22,3 +22,14 @@ I'm interested in this project because I want to learn how to implement a word s
 
 - As a user, I want to save the document library to file
 - As a user, I want to open a previously saved document library and continue working on it
+
+## Phase 4: Task 2
+- Test and design a class in your model package that is robust.  You must have at least one method that throws a checked exception.  You must have one test for the case where the exception is expected and another where the exception is not expected.
+- Make appropriate use of the Map interface somewhere in your code. 
+- Make appropriate use of a bi-directional association somewhere in your code.  So, there must be a need for each class in the association to call methods on the other class. 
+
+I added robustness to the PredictiveSpellchecker class, in both the constructor and cartesianProduct(). If a PC is constructed with a null dictionary, the PC throws a DictException. If PC.cartesianProduct() is passed two sets, and one of them is empty, it throws a CartesianProductException.
+
+I also used a HashMap (specifically, HashMap<String, HashSet<String>>) to store the neighbour keys on a keyboard, which are used to generate the typing paths for the spellchecking algorithm.
+
+I also implemented a bi-directional association between Document and DocumentLibrary, making sure that the proper mutual behaviour occurs. If you set a Document's DL, it calls the DL's addDocument method, and vice versa.

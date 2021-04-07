@@ -21,7 +21,7 @@
             "text": "Some text I wrote. Here is some more text that I added."
         },
         {
-            "hasErrors": true,
+            "hasErrors": false,
             "name": "Test2",
             "text": "this is some bad spelling"
         }

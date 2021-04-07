@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.DictException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,7 +17,7 @@ public class DocumentLibrary {
     private String name;
 
     // REQUIRES: dictionary file must be available in the proper location
-    public DocumentLibrary() throws FileNotFoundException {
+    public DocumentLibrary() throws FileNotFoundException, DictException {
         docs = new LinkedList<>();
         loadDictionary();
         checker = new PredictiveSpellchecker(dictionary);

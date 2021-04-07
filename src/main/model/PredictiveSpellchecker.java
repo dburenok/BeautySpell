@@ -1,6 +1,8 @@
 package model;
 
-import javax.xml.ws.handler.HandlerResolver;
+import exceptions.CartesianProductException;
+import exceptions.DictException;
+
 import java.util.*;
 
 public class PredictiveSpellchecker {
@@ -8,14 +10,18 @@ public class PredictiveSpellchecker {
     private final HashMap<String, HashSet<String>> options;
     HashSet<String> dictionary;
 
-    public PredictiveSpellchecker(HashSet<String> dict) {
-        this.options = new HashMap<>();
-        this.dictionary = dict;
-        initializeKeyNeighbours();
+    public PredictiveSpellchecker(HashSet<String> dict) throws DictException {
+        if (dict == null) {
+            throw new DictException();
+        } else {
+            this.options = new HashMap<>();
+            this.dictionary = dict;
+            initializeKeyNeighbours();
+        }
     }
 
     // EFFECTS: produces set of typing paths for given word
-    public HashSet<String> generateTypingErrorPaths(String word) {
+    public HashSet<String> generateTypingErrorPaths(String word) throws CartesianProductException {
         ArrayList<HashSet<String>> optionsList = wordToOptionsList(word);
 
         while (optionsList.size() > 1) {
@@ -30,16 +36,21 @@ public class PredictiveSpellchecker {
     }
 
     // EFFECTS: produces the cartesian product of the given sets
-    public HashSet<String> cartesianProduct(HashSet<String> a, HashSet<String> b) {
-        HashSet<String> words = new HashSet<>();
-        for (String i : a) {
-            for (String j : b) {
-                words.add(i + j);
+    public HashSet<String> cartesianProduct(HashSet<String> a, HashSet<String> b) throws CartesianProductException {
+        if (a.size() == 0 || b.size() == 0) {
+            throw new CartesianProductException();
+        } else {
+            HashSet<String> words = new HashSet<>();
+            for (String i : a) {
+                for (String j : b) {
+                    words.add(i + j);
+                }
             }
+            return words;
         }
-        return words;
     }
 
+    // REQUIRES: word.length() > 0
     // EFFECTS: converts word to list of neighbour keys
     public ArrayList<HashSet<String>> wordToOptionsList(String word) {
         ArrayList<HashSet<String>> optionsList = new ArrayList<>();
@@ -53,14 +64,18 @@ public class PredictiveSpellchecker {
     // REQUIRES: word.length() > 0
     // EFFECTS: produce list of words which are real words, if any
     public HashSet<String> getStrictPathWordMatches(String word) {
-        HashSet<String> options = generateTypingErrorPaths(word);
-        HashSet<String> realWords = new HashSet<>();
-        for (String s : options) {
-            if (dictionary.contains(s)) {
-                realWords.add(s);
+        try {
+            HashSet<String> options = generateTypingErrorPaths(word);
+            HashSet<String> realWords = new HashSet<>();
+            for (String s : options) {
+                if (dictionary.contains(s)) {
+                    realWords.add(s);
+                }
             }
+            return realWords;
+        } catch (CartesianProductException e) {
+            return null;
         }
-        return realWords;
     }
 
     // REQUIRES: word.length() > 0

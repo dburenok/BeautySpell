@@ -1,5 +1,6 @@
 package ui;
 
+import exceptions.DictException;
 import model.Document;
 import model.DocumentLibrary;
 import model.SpellingError;
@@ -24,12 +25,12 @@ public class BeautySpell {
     Scanner sc;
     Document myDoc;
 
-    public BeautySpell() throws IOException {
+    public BeautySpell() throws IOException, DictException {
         startBeautySpell();
     }
 
     // EFFECTS: begins the program loop
-    public void startBeautySpell() throws FileNotFoundException {
+    public void startBeautySpell() throws FileNotFoundException, DictException {
         println("Welcome to BeautySpell!");
         myDocLib = new DocumentLibrary();
         docWriter = new DocWriter(JSON_STORE);
@@ -133,7 +134,7 @@ public class BeautySpell {
             myDocLib = docReader.read();
             System.out.println("Loaded Document Library from " + JSON_STORE);
             mainLoop();
-        } catch (IOException e) {
+        } catch (IOException | DictException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }

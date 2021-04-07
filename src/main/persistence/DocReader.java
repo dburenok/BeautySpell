@@ -1,5 +1,6 @@
 package persistence;
 
+import exceptions.DictException;
 import model.Document;
 import model.DocumentLibrary;
 import org.json.JSONArray;
@@ -25,7 +26,7 @@ public class DocReader {
 
     // EFFECTS: reads workroom from file and returns it;
     // throws IOException if an error occurs reading data from file
-    public DocumentLibrary read() throws IOException {
+    public DocumentLibrary read() throws IOException, DictException {
         String jsonData = readFile(source);
         JSONObject jsonObject = new JSONObject(jsonData);
         return parseDocumentLibrary(jsonObject);
@@ -47,7 +48,7 @@ public class DocReader {
     }
 
     // EFFECTS: parses workroom from JSON object and returns it
-    private DocumentLibrary parseDocumentLibrary(JSONObject jsonObject) throws FileNotFoundException {
+    private DocumentLibrary parseDocumentLibrary(JSONObject jsonObject) throws FileNotFoundException, DictException {
         DocumentLibrary dl = new DocumentLibrary();
         addDocuments(dl, jsonObject);
         return dl;

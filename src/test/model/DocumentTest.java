@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.DictException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ class DocumentTest {
     private DocumentLibrary testDocLib;
 
     @BeforeEach
-    void setup() throws FileNotFoundException {
+    void setup() throws FileNotFoundException, DictException {
         testDocLib = new DocumentLibrary();
     }
 

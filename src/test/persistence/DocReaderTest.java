@@ -1,5 +1,6 @@
 package persistence;
 
+import exceptions.DictException;
 import model.DocumentLibrary;
 import org.junit.jupiter.api.Test;
 
@@ -7,8 +8,6 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-
-import persistence.DocReader;
 
 
 public class DocReaderTest {
@@ -21,6 +20,8 @@ public class DocReaderTest {
             fail("IOException expected");
         } catch (IOException e) {
             // pass
+        } catch (DictException e) {
+            fail();
         }
     }
 
@@ -33,6 +34,8 @@ public class DocReaderTest {
             System.out.println(reader.getSource());
         } catch (IOException e) {
             fail("Couldn't read from file");
+        } catch (DictException e) {
+            fail();
         }
     }
 
@@ -45,6 +48,8 @@ public class DocReaderTest {
             assertEquals("This is some text,", dl.getDocument(0).getText());
         } catch (IOException e) {
             fail("Couldn't read from file");
+        } catch (DictException e) {
+            fail();
         }
     }
 
