@@ -64,7 +64,7 @@ public class PredictiveSpellcheckerTest {
 
     // PHASE 4
 
-        @Test
+    @Test
     void passNonEmptyDictionaryNoFail() {
         try {
             DocumentLibrary testDocLibrary2 = new DocumentLibrary();

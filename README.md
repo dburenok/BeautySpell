@@ -33,3 +33,6 @@ I added robustness to the PredictiveSpellchecker class, in both the constructor 
 I also used a HashMap (specifically, HashMap<String, HashSet<String>>) to store the neighbour keys on a keyboard, which are used to generate the typing paths for the spellchecking algorithm.
 
 I also implemented a bi-directional association between Document and DocumentLibrary, making sure that the proper mutual behaviour occurs. If you set a Document's DL, it calls the DL's addDocument method, and vice versa.
+
+## Phase 4: Task 3
+If I had more time to work on the project, I would refactor the Document and DocumentLibrary classes to reduce the coupling between them. I would also introduce a FileHandler class that took care of the reading and writing the files, to simplify the persistance implementation.
